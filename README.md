@@ -1,11 +1,12 @@
 # 每日五题
 ## 一.  css 基础
 1. [怎么让一个不定宽高的 DIV，垂直水平居中?](css/css_interview.md)
+2. [三栏布局，css权重，BFC](css/css_interview.md)
 
 ## 二. js 基础
-1.  [Js 内置类型，typeof, 类型转换](js/基础/01.md)
+1.  [Js 内置类型，typeof, 类型转换](小册学习/一、js基础知识及常考面试题.md)
 
-## 三. js进阶 
+## 三. js进阶
 1.  [JavaScript深入之从原型到原型链](js/进阶/原型链.md)
 2. [JavaScript深入之执行上下文](js/进阶/js深入执行上下文.md)
 
