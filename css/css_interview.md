@@ -16,13 +16,16 @@ II. div 设置:
   left: 50%;
 
 3. 使用 display: table-cell方法
-I. 父盒子设置:
-  display:table-cell;
-  text-align:center;
-  vertical-align:middle;
-II. Div 设置:
-  display:inline-block;
-  vertical-align:middle;
+.parent {
+    display: table;
+    height: 300px;
+    width: 100%;
+}
+.child {
+    line-height: 2;
+    display: table-cell;  /* 类似于表格中的单元格 */
+    vertical-align: middle;
+}
 
 4. 使用position: absoulte;
 I. 父盒子设置
