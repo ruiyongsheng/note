@@ -18,9 +18,10 @@
 1. [JavaScript深入之从原型到原型链](js/进阶/原型链.md)
 2. [JavaScript深入之执行上下文](js/进阶/js深入执行上下文.md)
 3. [Javascript深入之call,apply](js/进阶/js深入之call_apply.md)
+4. [Javascript深入之bind](js/进阶/js深入之bind手写.md)
 
 ## 四.  框架篇
-1. [vue生命周期及对应的行为](vue/vue_interview.md)
+1. [vue生命周期及对应的行为及常见面试考点](vue/vue_interview.md)
 2. [vue组件通信篇](vue/vue_interview.md)
 
 五. 数据结构与算法

@@ -271,11 +271,11 @@ column-span 为 all 的元素始终会创建一个新的BFC，即使该元素没
 
 ```css
 .triangle {
-    height:0;
-    width:0;
-    border-color:red blue green pink;
-    border-style:solid;
-    border-width:30px;
+	height:0;
+	width:0;
+	border-color:red blue green pink;
+	border-style:solid;
+	border-width:30px;
 }
 ```
 
@@ -285,11 +285,11 @@ column-span 为 all 的元素始终会创建一个新的BFC，即使该元素没
 
 ```css
 .triangle {
-    height:0;
-    width:0;
-    border-color:red transparent transparent transparent;
-    border-style:solid;
-    border-width:30px;
+	height:0;
+	width:0;
+	border-color:red transparent transparent transparent;
+	border-style:solid;
+	border-width:30px;
 }
 ```
 
@@ -308,3 +308,40 @@ column-span 为 all 的元素始终会创建一个新的BFC，即使该元素没
     transform: rotate(225deg); // 旋转225，变成下三角
 }
 ```
+#### box-sizing是什么
+
+设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content，二IE模型包括border和padding
+box-sizing属性可以为三个值之一：
+
+* content-box，默认值，只计算内容的宽度，border和padding不计算入width之内
+* padding-box，padding计算入宽度内
+* border-box，border和padding计算入宽度之内
+
+#### px,em,rem的区别
+* px 像素(Pixel)。绝对单位。像素 px 是`相对于显示器屏幕分辨率`而言的，是一个虚拟长度单位，是计算 机系统的数字化图像长度单位，如果 px 要换算成物理长度，需要指定精度 DPI。
+* em 是相对长度单位，`相对于当前对象内文本的字体尺寸`。如当前对行内文本的字体尺寸未被人为设置， 则相对于浏览器的默认字体尺寸。它会继承父级元素的字体大小，因此并不是一个固定的值。
+* rem 是 CSS3 新增的一个相对单位(root em，根 em)，使用 rem 为元素设定字体大小时，仍然是相对大小， 但`相对的只是 HTML 根元素`。
+实现原理
+```
+(function (doc, win) {
+	var docEle = doc.documentElement,
+	resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+	recalc = function () {
+		var width = docEle.clientWidth;
+		if (!width) return;
+		if (width > 1440) {
+				docEle.style.fontSize = 100 * (1440 / 360) + 'px';
+		} else {
+				docEle.style.fontSize = 100 * (width / 360) + 'px';
+		}
+	}
+	if (!doc.addEventListener) return;
+	win.addEventListener(resizeEvt, recalc, false);
+	doc.addEventListener('DOMContentLoaded', recalc, false);
+})(document, window);
+```
+####
+
+
+
+

@@ -232,5 +232,7 @@ click.native stop,prevent,self
 ![](https://user-gold-cdn.xitu.io/2020/7/1/1730af7be818b9b2?w=1214&h=942&f=png&s=344310)
 
 
+[vue基础指令考点](https://www.cnblogs.com/zzkxjh/p/13053790.html)
+
 
 
