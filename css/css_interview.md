@@ -241,3 +241,70 @@ column-span 为 all 的元素始终会创建一个新的BFC，即使该元素没
     float: left;
 }
 ```
+#### flex布局
+
+![flex布局](https://user-gold-cdn.xitu.io/2019/10/14/16dca9f0ef712b7a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+#### 如何实现一个自适应的正方形
+方法一： 利用vw单位
+`vw` 会把视口的宽度平均分为100份
+```
+.square {
+    width: 10vw;
+    height: 10vw;
+    background: red;
+}
+```
+方法二： 利用margin或者padding的百分比计算，是参照父元素的width属性
+
+```
+.square {
+    width: 10%;
+    padding-bottom: 10%;
+    height: 0; // 防止内容撑开多余的高度
+    background: red;
+}
+```
+#### 如何用css实现一个三角形
+
+方法1： 利用border属性
+
+```css
+.triangle {
+    height:0;
+    width:0;
+    border-color:red blue green pink;
+    border-style:solid;
+    border-width:30px;
+}
+```
+
+![](https://user-gold-cdn.xitu.io/2020/7/1/1730ae41e0c56a99?w=262&h=178&f=png&s=25416)
+
+如果想实现其中的任一个三角形，把其他方向上的 border-color 都设置成透明即可。
+
+```css
+.triangle {
+    height:0;
+    width:0;
+    border-color:red transparent transparent transparent;
+    border-style:solid;
+    border-width:30px;
+}
+```
+
+![](https://user-gold-cdn.xitu.io/2020/7/1/1730ae524d7897eb?w=274&h=192&f=png&s=10341)
+
+方法二： 利用css3的 clip-path 属性
+
+
+不了解`clip-path`属性的可以先看看`mdn`上的介绍：[clip-path](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path)
+```css
+.triangle {
+    width: 30px;
+    height: 30px;
+    background: red;
+    clip-path: polygon(0px 0px, 0px 30px, 30px 0px); // 将坐标(0,0),(0,30),(30,0)连成一个三角形
+    transform: rotate(225deg); // 旋转225，变成下三角
+}
+```

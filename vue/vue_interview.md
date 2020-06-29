@@ -181,5 +181,56 @@ $parent / $children：访问 父/子 实例
 
 参考文章：[vue组件通信](https://juejin.im/post/5cde0b43f265da03867e78d3)
 
+#### 基础面试知识点
+
+绑定 class 的数组用法
+
+```js
+对象方法 v-bind:class="{'orange': isRipe, 'green': isNotRipe}"
+数组方法v-bind:class="[class1, class2]"
+行内 v-bind:style="{color: color, fontSize: fontSize+'px' }"
+```
+计算属性与Watch的区别
+计算属性是自动监听依赖值的变化，从而动态返回内容，监听是一个过程，在监听的值变化时，可以触发一个回调，并做一些事情。
+所以区别来源于用法，只是需要动态值，那就用计算属性；需要知道值的改变后执行业务逻辑，才用 watch，用反或混用虽然可行，但都是不正确的用法。
+说出一下区别会加分
+computed 是一个对象时，它有哪些选项？
+computed 和 methods 有什么区别？
+computed 是否能依赖其它组件的数据？
+watch 是一个对象时，它有哪些选项？
+
+
+1. 有get和set两个选项
+
+2. methods是一个方法，它可以接受参数，而computed不能，computed是可以缓存的，methods不会。
+3. computed可以依赖其他computed，甚至是其他组件的data
+4. watch 配置
+    * handler
+    * deep 是否深度
+    * immeditate // 是否立即执行
+
+**总结**
+
+当有一些数据需要随着另外一些数据变化时，建议使用computed。
+当有一个通用的响应数据变化的时候，要执行一些业务逻辑或异步操作的时候建议使用watch
+
+**事件修饰符**
+
+```
+click.native stop,prevent,self
+```
+
+**组件中的data为什么必须是函数**
+
+```
+为什么组件中的 data 必须是一个函数，然后 return 一个对象，而 new Vue 实例里，data 可以直接是一个对象？
+```
+答： 因为组件是用来复用的，JS 里对象是引用关系，这样作用域没有隔离，而 new Vue 的实例，是不会被复用的，因此不存在引用对象的问题。
+
+**v-model的语法糖是怎么实现的**
+
+![](https://user-gold-cdn.xitu.io/2020/7/1/1730af7be818b9b2?w=1214&h=942&f=png&s=344310)
+
+
 
 
