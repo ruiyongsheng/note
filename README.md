@@ -12,6 +12,7 @@
 
 ## 四.  框架篇
 1. [vue生命周期及对应的行为](vue/vue_interview.md)
+2. [vue组件通信篇](vue/vue_interview.md)
 
 五. 数据结构与算法
 1.  堆，栈，队列，链表，树，图
