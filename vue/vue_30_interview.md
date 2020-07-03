@@ -533,6 +533,175 @@ Vue 主要通过以下 4 个步骤来实现数据双向绑定的：
 
 #### 21. Vue框架怎么实现对象和数组的间监听？
 <hr>
+如果被问到 Vue 怎么实现数据双向绑定，大家肯定都会回答 通过 Object.defineProperty() 对数据进行劫持，但是 Object.defineProperty() 只能对属性进行数据劫持，不能对整个对象进行劫持，同理无法对数组进行劫持，但是我们在使用 Vue 框架中都知道，Vue 能检测到对象和数组（部分方法的操作）的变化，那它是怎么实现的呢？我们查看相关代码如下：
+
+
+```js
+ /**
+   * Observe a list of Array items.
+   */
+  observeArray (items: Array<any>) {
+    for (let i = 0, l = items.length; i < l; i++) {
+      observe(items[i])  // observe 功能为监测数据的变化
+    }
+  }
+
+  /**
+   * 对属性进行递归遍历
+   */
+  let childOb = !shallow && observe(val) // observe 功能为监测数据的变化
+```
+通过以上 Vue 源码部分查看，我们就能知道 Vue 框架是通过遍历数组 和递归遍历对象，从而达到利用 Object.defineProperty() 也能对对象和数组（部分方法的操作）进行监听。
+
+#### 22. Proxy 与 Object.defineProperty 优劣对比
+<hr>
+
+**Proxy 的优势如下:**
+
+
+* Proxy 可以直接监听对象而非属性；
+
+* Proxy 可以直接监听数组的变化；
+
+* Proxy 有多达 13 种拦截方法,不限于 apply、ownKeys、deleteProperty、has 等等是 Object.defineProperty 不具备的；
+
+* Proxy 返回的是一个新对象,我们可以只操作新的对象达到目的,而 Object.defineProperty 只能遍历对象属性直接修改；
+
+* Proxy 作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利；
+
+**Object.defineProperty 的优势如下**:
+
+* 兼容性好，支持 IE9，而 Proxy 的存在浏览器兼容性问题,而且无法用 polyfill 磨平，因此 Vue 的作者才声明需要等到下个大版本( 3.0 )才能用 Proxy 重写。
+
+#### 23. Vue怎么用vm.$set()解决对象新增属性不能响应的问题？
+<hr>
+
+受现代 JavaScript 的限制 ，Vue `无法检测到对象属性的添加或删除`。由于 Vue 会在初始化实例时对属性执行 getter/setter 转化，所以属性必须在 data 对象上存在才能让 Vue 将它转换为响应式的。但是 Vue 提供了 `Vue.set (object, propertyName, value) / vm.$set (object, propertyName, value)` 来实现为对象添加响应式属性，那框架本身是如何实现的呢？
+
+我们查看对应的 Vue 源码：vue/src/core/instance/index.js
+
+```js
+export function set (target: Array<any> | Object, key: any, val: any): any {
+  // target 为数组
+  if (Array.isArray(target) && isValidArrayIndex(key)) {
+    // 修改数组的长度, 避免索引>数组长度导致splcie()执行有误
+    target.length = Math.max(target.length, key)
+    // 利用数组的splice变异方法触发响应式
+    target.splice(key, 1, val)
+    return val
+  }
+  // key 已经存在，直接修改属性值
+  if (key in target && !(key in Object.prototype)) {
+    target[key] = val
+    return val
+  }
+  const ob = (target: any).__ob__
+  // target 本身就不是响应式数据, 直接赋值
+  if (!ob) {
+    target[key] = val
+    return val
+  }
+  // 对属性进行响应式处理
+  defineReactive(ob.value, key, val)
+  ob.dep.notify()
+  return val
+}
+```
+我们阅读以上源码可知，vm.$set 的实现原理是：
+
+
+* 如果目标是数组，直接使用数组的 splice 方法触发相应式；
+
+
+* 如果目标是对象，会先判读属性是否存在、对象是否是响应式，最终如果要对属性进行响应式处理，则是通过调用 defineReactive 方法进行响应式处理（ defineReactive 方法就是 Vue 在初始化对象时，给对象属性采用 Object.defineProperty 动态添加 getter 和 setter 的功能所调用的方法）
+
+#### 24. 虚拟DOM的优缺点
+<hr>
+
+**优点：**
+
+
+* 保证性能下限： 框架的虚拟 DOM 需要适配任何上层 API 可能产生的操作，它的一些 DOM 操作的实现必须是普适的，所以它的性能并不是最优的；但是比起粗暴的 DOM 操作性能要好很多，因此框架的虚拟 DOM 至少可以保证在你不需要手动优化的情况下，依然可以提供还不错的性能，即保证性能的下限；
+
+* 无需手动操作 DOM： 我们不再需要手动去操作 DOM，只需要写好 View-Model 的代码逻辑，框架会根据虚拟 DOM 和 数据双向绑定，帮我们以可预期的方式更新视图，极大提高我们的开发效率；
+
+* 跨平台： 虚拟 DOM 本质上是 JavaScript 对象,而 DOM 与平台强相关，相比之下虚拟 DOM 可以进行更方便地跨平台操作，例如服务器渲染、weex 开发等等。
+
+**缺点:**
+
+
+* 无法进行极致优化： 虽然虚拟 DOM + 合理的优化，足以应对绝大部分应用的性能需求，但在一些性能要求极高的应用中虚拟 DOM 无法进行针对性的极致优化。
+
+#### 25. 虚拟DOM实现原理
+<hr>
+
+虚拟 DOM 的实现原理主要包括以下 3 部分：
+
+
+* 用 JavaScript 对象模拟真实 DOM 树，对真实 DOM 进行抽象；
+
+* diff 算法 — 比较两棵虚拟 DOM 树的差异；
+
+* pach 算法 — 将两个虚拟 DOM 对象的差异应用到真正的 DOM 树。
+
+#### 26.Vue中的key 有什么作用？
+<hr>
+
+`key 是为 Vue 中 vnode 的唯一标记`，通过这个 key，我们的 diff 操作可以更准确、更快速。Vue 的 diff 过程可以概括为：oldCh 和 newCh 各有两个头尾的变量 oldStartIndex、oldEndIndex 和 newStartIndex、newEndIndex，它们会新节点和旧节点会进行两两对比，即一共有4种比较方式：newStartIndex 和oldStartIndex 、newEndIndex 和 oldEndIndex 、newStartIndex 和 oldEndIndex 、newEndIndex 和 oldStartIndex，如果以上 4 种比较都没匹配，如果设置了key，就会用 key 再进行比较，在比较的过程中，遍历会往中间靠，一旦 StartIdx > EndIdx 表明 oldCh 和 newCh 至少有一个已经遍历完了，就会结束比较。具体有无 key 的 diff 过程，可以查看作者写的另一篇详解虚拟 DOM 的文章《深入剖析：Vue核心之虚拟DOM》
+
+所以 Vue 中 key 的作用是：`key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操作可以更准确、更快速`
+
+更准确：因为带 key 就不是就地复用了，在 sameNode 函数 a.key === b.key 对比中可以避免就地复用的情况。所以会更加准确。
+
+更快速：利用 key 的唯一性生成 map 对象来获取对应节点，比遍历方式更快，源码如下：
+
+
+```js
+function createKeyToOldIdx (children, beginIdx, endIdx) {
+  let i, key
+  const map = {}
+  for (i = beginIdx; i <= endIdx; ++i) {
+    key = children[i].key
+    if (isDef(key)) map[key] = i
+  }
+  return map
+}
+```
+#### 27. 对vue项目进行哪些优化：
+
+（1）代码层面的优化
+
+* v-if 和 v-show 区分使用场景
+* computed 和 watch 区分使用场景
+* v-for 遍历必须为 item 添加 key，且避免同时使用 v-if
+* 长列表性能优化
+* 事件的销毁
+* 图片资源懒加载
+* 路由懒加载
+* 第三方插件的按需引入
+* 优化无限列表性能
+* 服务端渲染 SSR or 预渲染
+
+（2）Webpack 层面的优化
+
+* Webpack 对图片进行压缩
+* 减少 ES6 转为 ES5 的冗余代码
+* 提取公共代码
+* 模板预编译
+* 提取组件的 CSS
+* 优化 SourceMap
+* 构建结果输出分析
+* Vue 项目的编译优化
+
+（3）基础的 Web 技术的优化
+
+* 开启 gzip 压缩
+
+* 浏览器缓存
+
+* CDN 的使用
+
+* 使用 Chrome Performance 查找性能瓶颈
 
 
 
