@@ -15,6 +15,9 @@
 
 ## 二. js 基础
 1.  [Js 内置类型，typeof, 类型转换](小册学习/一、js基础知识及常考面试题.md)
+2.  [Js && || 和!!运算符](js/基础/逻辑运算符使用.md)
+3.  [Js undefined与undeclared与null的区别](js/基础/undefined和null区别.md)
+4.  [Js 作用域和作用域链](js/基础/作用域和作用域链.md)
 
 ## 三. js进阶
 1. [JavaScript深入之从原型到原型链](js/进阶/原型链.md)
@@ -22,6 +25,7 @@
 3. [Javascript深入之call,apply](js/进阶/js深入之call_apply.md)
 4. [Javascript深入之bind](js/进阶/js深入之bind手写.md)
 5. [JavaScript深入之new的模拟实现](js/进阶/new_instanceof.md)
+6. [Js 实现Promise](小册学习/四、手写promise.md)
 
 ## 四.  框架篇
 1. [vue生命周期及对应的行为及常见面试考点](vue/vue_interview.md)
