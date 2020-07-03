@@ -21,10 +21,13 @@
 2. [JavaScript深入之执行上下文](js/进阶/js深入执行上下文.md)
 3. [Javascript深入之call,apply](js/进阶/js深入之call_apply.md)
 4. [Javascript深入之bind](js/进阶/js深入之bind手写.md)
+5. [Javascript深入之Promise](js/进阶/js深入之bind手写.md)
+6. [Javascript深入之async await](js/进阶/js深入之bind手写.md)
 
 ## 四.  框架篇
 1. [vue生命周期及对应的行为及常见面试考点](vue/vue_interview.md)
 2. [vue组件通信篇](vue/vue_interview.md)
+3. [react文件夹分析](js/进阶/js深入之bind手写.md)
 
 ## 五. 数据结构与算法
 1.  堆，栈，队列，链表，树，图
