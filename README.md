@@ -9,6 +9,7 @@
   定位
   实现自适应的正方形
   实现一个三角形
+  实现圣杯和双飞翼布局
   ](css/css_interview.md)
  3. [css 盒模型，百分比，负边距，浮动和清除](css/css3.md) 
 
@@ -20,10 +21,12 @@
 2. [JavaScript深入之执行上下文](js/进阶/js深入执行上下文.md)
 3. [Javascript深入之call,apply](js/进阶/js深入之call_apply.md)
 4. [Javascript深入之bind](js/进阶/js深入之bind手写.md)
+5. [JavaScript深入之new的模拟实现](js/进阶/new_instanceof.md)
 
 ## 四.  框架篇
 1. [vue生命周期及对应的行为及常见面试考点](vue/vue_interview.md)
 2. [vue组件通信篇](vue/vue_interview.md)
+3. [vue常见面试题](https://github.com/fengshi123/blog/issues/14)
 
 ## 五. 数据结构与算法
 1.  堆，栈，队列，链表，树，图

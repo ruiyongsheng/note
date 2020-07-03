@@ -1,6 +1,6 @@
 ## 1. vue生命周期及对应的行为
 官网大图：
-![](https://user-gold-cdn.xitu.io/2020/6/29/172ff3cdc350c7eb?w=1200&h=3039&f=png&s=231405)
+![](https://github.com/fengshi123/blog/blob/master/assets/vue_interview/1.png?raw=true)
 
 | 钩子函数 | 触发的行为 | 在此阶段可以做的事情 |
 |------|------------|------------|

@@ -340,7 +340,200 @@ box-sizing属性可以为三个值之一：
 	doc.addEventListener('DOMContentLoaded', recalc, false);
 })(document, window);
 ```
-####
+#### 如何进行品字布局
+
+```html
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>品字布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      overflow: hidden;
+    }
+    div {
+      margin: auto 0;
+      width: 100px;
+      height: 100px;
+      background: red;
+      font-size: 40px;
+      line-height: 100px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .div1 {
+      margin: 100px auto 0;
+    }
+
+    .div2 {
+      margin-left: 50%;
+      background: green;
+      float: left;
+      transform: translateX(-100%);
+    }
+
+    .div3 {
+      background: blue;
+      float: left;
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="div1">1</div>
+  <div class="div2">2</div>
+  <div class="div3">3</div>
+</body>
+
+</html>
+```
+效果：
+![](https://user-gold-cdn.xitu.io/2020/7/3/17313e420bb9b3d5?w=1288&h=424&f=png&s=16443)
+#### 第二种（全屏版）
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>品字布局</title>
+    <style>
+      div {
+        width: 100%;
+        height: 100px;
+        background: red;
+        font-size: 40px;
+        line-height: 100px;
+        color: #fff;
+        text-align: center;
+      }
+
+      .div1 {
+        margin: 0 auto 0;
+      }
+
+      .div2 {
+        background: green;
+        float: left;
+        width: 50%;
+      }
+
+      .div3 {
+        background: blue;
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="div1">1</div>
+    <div class="div2">2</div>
+    <div class="div3">3</div>
+  </body>
+</html>
+```
+效果：
+
+
+![](https://user-gold-cdn.xitu.io/2020/7/3/17313e8e10baf5aa?w=1374&h=294&f=png&s=13385)
+
+#### css如何进行圣杯布局
+
+```html
+<style>
+.container{
+    display: flex;
+}
+.middle{
+    flex: 1;
+    background:yellow;
+}
+.left{
+    width:200px;
+    background:pink;
+}
+.right{
+    background: aqua;
+    width:300px;
+}
+</style>
+
+<div class="container">
+    <div class="left">左边</div>
+    <div class="middle">中间部分</div>
+    <div class="right">右边</div>
+</div>
+```
+#### css如何实现双飞翼布局？
+
+![](https://user-gold-cdn.xitu.io/2020/7/3/17313f68e600f633?w=1356&h=742&f=png&s=34699)
+
+float布局来完成
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+        min-width: 600px;
+    }
+    .left {
+        float: left;
+        width: 200px;
+        height: 400px;
+        background: red;
+        margin-left: -100%;
+    }
+    .center {
+        float: left;
+        width: 100%;
+        height: 500px;
+        background: yellow;
+    }
+    .center .inner {
+        margin: 0 200px;
+    }
+    .right {
+        float: left;
+        width: 200px;
+        height: 400px;
+        background: blue;
+        margin-left: -200px;
+    }
+  </style>
+</head>
+
+<body>
+  <article class="container">
+    <div class="center">
+        <div class="inner">双飞翼布局</div>
+    </div>
+    <div class="left"></div>
+    <div class="right"></div>
+</article>
+</body>
+
+</html>
+```
 
 
 
