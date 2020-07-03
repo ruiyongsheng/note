@@ -48,6 +48,32 @@
     <div class="left"></div>
     <div class="right"></div>
 </article>
+<script>
+  // 混合式继承
+  function Car(color) {
+    this.color = color;
+  }
+  Car.prototype.sale = function () {
+    console.log(this.color);
+  }
+  function BMW (color) {
+    Car.call(this, color);
+  }
+  BMW.prototype.Q = function () {
+
+  }
+  // BMW 要去继承Car上的属性或者方法
+  // 创建一个car的副本，不能修改Car是内容，保留Car的所有内容
+  var bak = Object.create(Car.prototype);
+  // 让副本的constructor等于构造函数,修改 this指向
+  bak.constructor = BMW;
+  console.log('constructor',bak);
+  BMW.prototype = bak;
+  console.log('proto',bak);
+  const s = new BMW('red');
+  s.sale();
+
+</script>
 </body>
 
 </html>
