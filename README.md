@@ -27,7 +27,7 @@
 5. [JavaScript深入之new的模拟实现](js/进阶/new_instanceof.md)
 6. [Js 实现Promise](小册学习/四、手写promise.md)
 7. [Javascript深入之创建对象的多种方法](js/进阶/JavaScript深入之创建对象.md)
-8. [avaScript深入之类数组对象与arguments](js/进阶/avaScript深入之类数组对象与arguments.md)
+8. [JavaScript深入之类数组对象与arguments](js/进阶/avaScript深入之类数组对象与arguments.md)
 9. [JavaScript深入之继承的多种方式和优缺点]()
 
 ## 四.  框架篇

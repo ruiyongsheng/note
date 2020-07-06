@@ -72,7 +72,107 @@
   console.log('proto',bak);
   const s = new BMW('red');
   s.sale();
+//  手写 new
+  function MyNew () {
+    var obj = new Object();
+    var fun = [].shift.call(arguments);
+    obj.__proto__ = fun.prototype;
+    // res 是函数执行后的结果
+    let res = fun.apply(obj, arguments);
+    return res instanceof Object? res : obj;
+  }
+  // 手写 call
+  Object.prototype.myCall = function (context,...args) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    var ctx = context || window;
+    ctx.fn = this;
+    // res 是函数执行后的结果
+    let res = ctx.fn(...args);
+    delete ctx.fn;
+    return res;
+  }
+  // 手写 call
+  Object.prototype.myApply = function (context,...args) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    var ctx = context || window;
+    const fn = Symbol();
+    ctx.fn = this;
+    // res 是函数执行后的结果
+    let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
+    delete ctx.fn;
+    return res;
+  }
+  // 手写 bind
+  Object.prototype.myBind = function (context,...args1) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    let self = this;
+    return function F(...arg2) {
+      if (this instanceof F) {
+        return new self(...args1, ...arg2)
+      }
+      return self.apply(context, args1.concat(arg2))
+    }
+  }
 
+  // 手写一个 new
+  function MyNew () {
+    // 1. 创建一个空对象
+    let obj = new Object();
+    // 2. 获取构造函数
+    let fn = [].shift.call(arguments);
+    // 3. 将构造函数的原型挂载空对象的 原型属性上
+    obj.__proto__ = fn.prototype;
+    // 4. 保存 this,执行该函数
+    let res = fn.apply(obj, arguments);
+    return res instanceof Object ? res: obj;
+  }
+  // 手写一个call
+  Function.prototype.myCall = function (context, ...args) {
+    //  1. 判断 this 是否在 Function的原型上
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    // 2. 做兼容处理，如果没有执行上下文，就取window
+    const ctx = context || window;
+    // 3. 声明构造函数
+    const fn = Symbol();
+    ctx.fn = this;
+    const res = ctx.fn(...args);
+    delete ctx.fn;
+    return res;
+  }
+  // 手写一个apply
+  Function.prototype.myApply = function (context, ...args) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    const ctx = context || window;
+    const fn = Symbol();
+    ctx.fn = this;
+    let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
+    delete ctx.fn;
+    return res;
+  }
+  // 手写一个bind
+  Function.prototype.myBind = function(context, ...args1) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    const ctx = context || window;
+    const self = this;
+    return function F (...args2 ) {
+      if (this instanceof F) {
+        return new F(...args1,...args2);
+      }
+      return self.apply(ctx,args1.concat(args2));
+    }
+  }
 </script>
 </body>
 
