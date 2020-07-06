@@ -72,6 +72,53 @@
   console.log('proto',bak);
   const s = new BMW('red');
   s.sale();
+//  手写 new
+  function MyNew () {
+    var obj = new Object();
+    var fun = [].shift.call(arguments);
+    obj.__proto__ = fun.prototype;
+    // res 是函数执行后的结果
+    let res = fun.apply(obj, arguments);
+    return res instanceof Object? res : obj;
+  }
+  // 手写 call
+  Object.prototype.myCall = function (context,...args) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    var ctx = context || window;
+    ctx.fn = this;
+    // res 是函数执行后的结果
+    let res = ctx.fn(...args);
+    delete ctx.fn;
+    return res;
+  }
+  // 手写 call
+  Object.prototype.myApply = function (context,...args) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    var ctx = context || window;
+    const fn = Symbol();
+    ctx.fn = this;
+    // res 是函数执行后的结果
+    let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
+    delete ctx.fn;
+    return res;
+  }
+  // 手写 bind
+  Object.prototype.myBind = function (context,...args1) {
+    if (this === Function.prototype) {
+      return undefined;
+    }
+    let self = this;
+    return function F(...arg2) {
+      if (this instanceof F) {
+        return new self(...args1, ...arg2)
+      }
+      return self.apply(context, args1.concat(arg2))
+    }
+  }
 
 </script>
 </body>
