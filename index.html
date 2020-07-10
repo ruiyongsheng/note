@@ -272,9 +272,9 @@
 				for (let i = 0; i < arr.length; i++) {
 					const item = arr[i];
 					if (Array.isArray(item)) {
-            myFlat(item);
-            continue;
-          }
+						myFlat(item);
+						continue;
+					}
 					newArr.push(item);
 				}
 				return newArr;
@@ -292,7 +292,7 @@
 			no_repeat(newArr);
 			function mySort(array) {
 				for (let i = 0; i < array.length - 1; i++) {
-					for (let j = 0; j < array.length -1- i; j++) {
+					for (let j = 0; j < array.length - 1 - i; j++) {
 						if (array[j] > array[j + 1]) {
 							let temp = array[j];
 							array[j] = array[j + 1];
@@ -303,12 +303,44 @@
 				return array;
 			}
 			// mySort(no_arr);
-      console.log(mySort(no_arr));
-      if (1 && 2 && false) {
-        console.log('if')
-      } else {
-        console.log('else')
-      }
+			// console.log(mySort(no_arr));
+			if (1 && 2 && false) {
+				console.log('if');
+			} else {
+				console.log('else');
+			}
+			var arr1 = [12, 8, 24, 16, 1];
+			/* insert: 实现插入排序
+			 *  @params
+			 *       ary[array] 需要排序的数组
+			 *  @return
+			 *       [array] 排序后的新数组
+			 */
+			function insert(arr) {
+				// 1. 准备一个新数组，用来存储抓到手里的牌，开始先抓一张牌进来
+				let handle = [];
+				handle.push(arr[0]);
+				// 2.从第二项开始依次抓牌，一直到把台面上的牌抓光
+				for (let i = 1; i < arr.length; i++) {
+					// A 是新抓的牌
+					let A = arr[i];
+					// 3. 和 handle手机的牌依次比较，从后向前比较
+					for (let j = handle.lenth - 1; j >= 0; j--) {
+						let B = handle[j];
+						// 如果当前新牌A比要比较的牌B打了，就把A放在B的后面
+						if (A > B) {
+							handle.splice(j + 1, 0, A);
+							break;
+						}
+						// 如果比到第一项的，我们就把新牌放到手中最前面即可
+						if (j === 0) {
+							handle.unshift(A);
+						}
+					}
+				}
+				return handle;
+			}
+			console.log(insert(arr1));
 		</script>
 	</body>
 </html>
