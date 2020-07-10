@@ -14,6 +14,7 @@
  3. [css 盒模型，百分比，负边距，浮动和清除](css/css3.md)
 
 ## 二. js 基础
+总结面试题： [js面试题](js/前端面试题.md)
 1.  [Js 内置类型，typeof, 类型转换](小册学习/一、js基础知识及常考面试题.md)
 2.  [Js && || 和!!运算符](js/基础/逻辑运算符使用.md)
 3.  [Js undefined与undeclared与null的区别](js/基础/undefined和null区别.md)
