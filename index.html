@@ -1,346 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<title>Document</title>
-		<style>
-			* {
-				margin: 0;
-				padding: 0;
-			}
-			.container {
-				min-width: 600px;
-			}
-			.left {
-				float: left;
-				width: 200px;
-				height: 400px;
-				background: red;
-				margin-left: -100%;
-			}
-			.center {
-				float: left;
-				width: 100%;
-				height: 500px;
-				background: yellow;
-			}
-			.center .inner {
-				margin: 0 200px;
-			}
-			.right {
-				float: left;
-				width: 200px;
-				height: 400px;
-				background: blue;
-				margin-left: -200px;
-			}
-		</style>
-	</head>
 
-	<body>
-		<article class="container">
-			<div class="center">
-				<div class="inner">双飞翼布局</div>
-			</div>
-			<div class="left"></div>
-			<div class="right"></div>
-		</article>
-		<script>
-			// 混合式继承
-			function Car(color) {
-				this.color = color;
-			}
-			Car.prototype.sale = function () {
-				console.log(this.color);
-			};
-			function BMW(color) {
-				Car.call(this, color);
-			}
-			BMW.prototype.Q = function () {};
-			// BMW 要去继承Car上的属性或者方法
-			// 创建一个car的副本，不能修改Car是内容，保留Car的所有内容
-			var bak = Object.create(Car.prototype);
-			// 让副本的constructor等于构造函数,修改 this指向
-			bak.constructor = BMW;
-			console.log('constructor', bak);
-			BMW.prototype = bak;
-			console.log('proto', bak);
-			const s = new BMW('red');
-			s.sale();
-			//  手写 new
-			function MyNew() {
-				var obj = new Object();
-				var fun = [].shift.call(arguments);
-				obj.__proto__ = fun.prototype;
-				// res 是函数执行后的结果
-				let res = fun.apply(obj, arguments);
-				return res instanceof Object ? res : obj;
-			}
-			// 手写 call
-			Object.prototype.myCall = function (context, ...args) {
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				var ctx = context || window;
-				ctx.fn = this;
-				// res 是函数执行后的结果
-				let res = ctx.fn(...args);
-				delete ctx.fn;
-				return res;
-			};
-			// 手写 call
-			Object.prototype.myApply = function (context, ...args) {
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				var ctx = context || window;
-				const fn = Symbol();
-				ctx.fn = this;
-				// res 是函数执行后的结果
-				let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
-				delete ctx.fn;
-				return res;
-			};
-			// 手写 bind
-			Object.prototype.myBind = function (context, ...args1) {
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				let self = this;
-				return function F(...arg2) {
-					if (this instanceof F) {
-						return new self(...args1, ...arg2);
-					}
-					return self.apply(context, args1.concat(arg2));
-				};
-			};
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Document</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
 
-			// 手写一个 new
-			function MyNew() {
-				// 1. 创建一个空对象
-				let obj = new Object();
-				// 2. 获取构造函数
-				let fn = [].shift.call(arguments);
-				// 3. 将构造函数的原型挂载空对象的 原型属性上
-				obj.__proto__ = fn.prototype;
-				// 4. 保存 this,执行该函数
-				let res = fn.apply(obj, arguments);
-				return res instanceof Object ? res : obj;
-			}
-			// 手写一个call
-			Function.prototype.myCall = function (context, ...args) {
-				//  1. 判断 this 是否在 Function的原型上
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				// 2. 做兼容处理，如果没有执行上下文，就取window
-				const ctx = context || window;
-				// 3. 声明构造函数
-				const fn = Symbol();
-				ctx.fn = this;
-				const res = ctx.fn(...args);
-				delete ctx.fn;
-				return res;
-			};
-			// 手写一个apply
-			Function.prototype.myApply = function (context, ...args) {
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				const ctx = context || window;
-				const fn = Symbol();
-				ctx.fn = this;
-				let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
-				delete ctx.fn;
-				return res;
-			};
-			// 手写一个bind
-			Function.prototype.myBind = function (context, ...args1) {
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				const ctx = context || window;
-				const self = this;
-				return function F(...args2) {
-					if (this instanceof F) {
-						return new F(...args1, ...args2);
-					}
-					return self.apply(ctx, args1.concat(args2));
-				};
-			};
-			// 手写继承
+		.container {
+			min-width: 600px;
+		}
 
-			function MyExtends(Child, Parent) {
-				// 1. 创建父类原型的副本，不能修改父类的属性，只能继承
-				var parent_bak = Object.create(Parent.prototype);
-				// Parent.prototype.consturctor = Parent = Child;
-				parent_bak.constructor = Child;
-				// 挂载副本到 子类的原型上
-				// Child.prototype = Parent.prototype
-				Child.prototype = parent_bak;
-			}
-			function Parent(name) {
-				this.name = name;
-			}
-			Parent.prototype.sayHello = function () {
-				console.log(this.name);
-			};
-			function Child(name, age) {
-				Parent.call(this, name);
-				this.age = age;
-			}
-			MyExtends(Child, Parent);
-			var child = new Child('test', '18');
-			console.log(child);
+		.left {
+			float: left;
+			width: 200px;
+			height: 400px;
+			background: red;
+			margin-left: -100%;
+		}
 
-			Function.prototype.myCall = function (ctx, args) {
-				//
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				ctx = ctx || window;
-				ctx.fn = this;
-				let res = ctx.fn(...args);
-				delete ctx.fn;
-				return res;
-			};
-			Function.prototype.myApply = function (ctx, args) {
-				//
-				if (this === Function.prototype) {
-					return undefined;
-				}
-				ctx = ctx || window;
-				ctx.fn = this;
-				let res;
-				if (Array.isArray(args)) {
-					res = ctx.fn(...args);
-				} else {
-					throw new Error('TEST');
-				}
-				delete ctx.fn;
-				return res;
-			};
-			Function.prototype.myBind = function (ctx) {
-				ctx = ctx || window;
-				let args1 = [].slice.call(arguments, 1);
-				let self = this;
-				return function F() {
-					let args2 = Array.from(arguments);
-					if (this instanceof F) {
-						return new self(...args1, ...args2);
-					}
-					return self.apply(ctx, args1.concat(args2));
-				};
-			};
-			// var arr = [1,2,3], obj = {
-			//   name: 'test'
-			// };
-			// function fn (x,y,z){
-			//   console.log('bind',x,y,z, this.name);
-			//   return x;
-			// }
-			// let result = fn.myApply(obj, [2]);
-			// // new result(3,4);
-			// console.log(result);
-			// console.log(fn.myBind(obj, 2)(3,4))
+		.center {
+			float: left;
+			width: 100%;
+			height: 500px;
+			background: yellow;
+		}
 
-			// 实现一个字符串匹配算法，从字符串S中，查找是否存在字符串T，若存在返回所在位置，不存在则返回-1（如果不能基于 indexOf/includes等内置的方法，你会如何处理呢？）
-			function myFind(source, target) {
-				// 1. 判断长度，如果S长度小于T,直接返回-1
-				let sLength = source.length;
-				let tLength = target.length;
-				let res = -1;
-				if (sLength < tLength) {
-					return res;
-				}
-				// 2. 通过循环 S,去匹配target,如果匹配到了，返回字符下标
-				for (let i = 0; i < sLength - tLength; i++) {
-					let str = source.substr(i, tLength);
-					if (str === target) {
-						res = i;
-					}
-				}
-				return res;
+		.center .inner {
+			margin: 0 200px;
+		}
+
+		.right {
+			float: left;
+			width: 200px;
+			height: 400px;
+			background: blue;
+			margin-left: -200px;
+		}
+	</style>
+</head>
+
+<body>
+	<article class="container">
+		<div class="center">
+			<div class="inner">双飞翼布局</div>
+		</div>
+		<div class="left"></div>
+		<div class="right"></div>
+	</article>
+	<script>
+		// 混合式继承
+		function Car(color) {
+			this.color = color;
+		}
+		Car.prototype.sale = function () {
+			console.log(this.color);
+		};
+		function BMW(color) {
+			Car.call(this, color);
+		}
+		BMW.prototype.Q = function () { };
+		// BMW 要去继承Car上的属性或者方法
+		// 创建一个car的副本，不能修改Car是内容，保留Car的所有内容
+		var bak = Object.create(Car.prototype);
+		// 让副本的constructor等于构造函数,修改 this指向
+		bak.constructor = BMW;
+		console.log('constructor', bak);
+		BMW.prototype = bak;
+		console.log('proto', bak);
+		const s = new BMW('red');
+		s.sale();
+		//  手写 new
+		function MyNew() {
+			var obj = new Object();
+			var fun = [].shift.call(arguments);
+			obj.__proto__ = fun.prototype;
+			// res 是函数执行后的结果
+			let res = fun.apply(obj, arguments);
+			return res instanceof Object ? res : obj;
+		}
+		// 手写 call
+		Object.prototype.myCall = function (context, ...args) {
+			if (this === Function.prototype) {
+				return undefined;
 			}
-			console.log(myFind('abcde', 'a'));
-			let arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
-			//  实现数组扁平：
-			let newArr = [];
-			function myFlat(arr) {
-				for (let i = 0; i < arr.length; i++) {
-					const item = arr[i];
-					if (Array.isArray(item)) {
-						myFlat(item);
-						continue;
-					}
-					newArr.push(item);
-				}
-				return newArr;
+			var ctx = context || window;
+			ctx.fn = this;
+			// res 是函数执行后的结果
+			let res = ctx.fn(...args);
+			delete ctx.fn;
+			return res;
+		};
+		// 手写 call
+		Object.prototype.myApply = function (context, ...args) {
+			if (this === Function.prototype) {
+				return undefined;
 			}
-			myFlat(arr);
-			let no_arr = [];
-			function no_repeat(array) {
-				for (let i = 0; i < array.length; i++) {
-					const ele = array[i];
-					if (no_arr.indexOf(ele) === -1) {
-						no_arr.push(ele);
-					}
-				}
+			var ctx = context || window;
+			const fn = Symbol();
+			ctx.fn = this;
+			// res 是函数执行后的结果
+			let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
+			delete ctx.fn;
+			return res;
+		};
+		// 手写 bind
+		Object.prototype.myBind = function (context, ...args1) {
+			if (this === Function.prototype) {
+				return undefined;
 			}
-			no_repeat(newArr);
-			function mySort(array) {
-				for (let i = 0; i < array.length - 1; i++) {
-					for (let j = 0; j < array.length - 1 - i; j++) {
-						if (array[j] > array[j + 1]) {
-							let temp = array[j];
-							array[j] = array[j + 1];
-							array[j + 1] = temp;
-						}
-					}
+			let self = this;
+			return function F(...arg2) {
+				if (this instanceof F) {
+					return new self(...args1, ...arg2);
 				}
-				return array;
+				return self.apply(context, args1.concat(arg2));
+			};
+		};
+
+		// 手写一个 new
+		function MyNew() {
+			// 1. 创建一个空对象
+			let obj = new Object();
+			// 2. 获取构造函数
+			let fn = [].shift.call(arguments);
+			// 3. 将构造函数的原型挂载空对象的 原型属性上
+			obj.__proto__ = fn.prototype;
+			// 4. 保存 this,执行该函数
+			let res = fn.apply(obj, arguments);
+			return res instanceof Object ? res : obj;
+		}
+		// 手写一个call
+		Function.prototype.myCall = function (context, ...args) {
+			//  1. 判断 this 是否在 Function的原型上
+			if (this === Function.prototype) {
+				return undefined;
 			}
-			// mySort(no_arr);
-			// console.log(mySort(no_arr));
-			if (1 && 2 && false) {
-				console.log('if');
+			// 2. 做兼容处理，如果没有执行上下文，就取window
+			const ctx = context || window;
+			// 3. 声明构造函数
+			const fn = Symbol();
+			ctx.fn = this;
+			const res = ctx.fn(...args);
+			delete ctx.fn;
+			return res;
+		};
+		// 手写一个apply
+		Function.prototype.myApply = function (context, ...args) {
+			if (this === Function.prototype) {
+				return undefined;
+			}
+			const ctx = context || window;
+			const fn = Symbol();
+			ctx.fn = this;
+			let res = Array.isArray(args) ? ctx.fn(...args) : ctx.fn();
+			delete ctx.fn;
+			return res;
+		};
+		// 手写一个bind
+		Function.prototype.myBind = function (context, ...args1) {
+			if (this === Function.prototype) {
+				return undefined;
+			}
+			const ctx = context || window;
+			const self = this;
+			return function F(...args2) {
+				if (this instanceof F) {
+					return new F(...args1, ...args2);
+				}
+				return self.apply(ctx, args1.concat(args2));
+			};
+		};
+		// 手写继承
+
+		function MyExtends(Child, Parent) {
+			// 1. 创建父类原型的副本，不能修改父类的属性，只能继承
+			var parent_bak = Object.create(Parent.prototype);
+			// Parent.prototype.consturctor = Parent = Child;
+			parent_bak.constructor = Child;
+			// 挂载副本到 子类的原型上
+			// Child.prototype = Parent.prototype
+			Child.prototype = parent_bak;
+		}
+		function Parent(name) {
+			this.name = name;
+		}
+		Parent.prototype.sayHello = function () {
+			console.log(this.name);
+		};
+		function Child(name, age) {
+			Parent.call(this, name);
+			this.age = age;
+		}
+		MyExtends(Child, Parent);
+		var child = new Child('test', '18');
+		console.log(child);
+
+		Function.prototype.myCall = function (ctx, args) {
+			//
+			if (this === Function.prototype) {
+				return undefined;
+			}
+			ctx = ctx || window;
+			ctx.fn = this;
+			let res = ctx.fn(...args);
+			delete ctx.fn;
+			return res;
+		};
+		Function.prototype.myApply = function (ctx, args) {
+			//
+			if (this === Function.prototype) {
+				return undefined;
+			}
+			ctx = ctx || window;
+			ctx.fn = this;
+			let res;
+			if (Array.isArray(args)) {
+				res = ctx.fn(...args);
 			} else {
-				console.log('else');
+				throw new Error('TEST');
 			}
-			var arr1 = [12, 8, 24, 16, 1];
-			/* insert: 实现插入排序
-			 *  @params
-			 *       ary[array] 需要排序的数组
-			 *  @return
-			 *       [array] 排序后的新数组
-			 */
-			function insert(arr) {
-				// 1. 准备一个新数组，用来存储抓到手里的牌，开始先抓一张牌进来
-				let handle = [];
-				handle.push(arr[0]);
-				// 2.从第二项开始依次抓牌，一直到把台面上的牌抓光
-				for (let i = 1; i < arr.length; i++) {
-					// A 是新抓的牌
-					let A = arr[i];
-					// 3. 和 handle手机的牌依次比较，从后向前比较
-					for (let j = handle.lenth - 1; j >= 0; j--) {
-						let B = handle[j];
-						// 如果当前新牌A比要比较的牌B打了，就把A放在B的后面
-						if (A > B) {
-							handle.splice(j + 1, 0, A);
-							break;
-						}
-						// 如果比到第一项的，我们就把新牌放到手中最前面即可
-						if (j === 0) {
-							handle.unshift(A);
-						}
+			delete ctx.fn;
+			return res;
+		};
+		Function.prototype.myBind = function (ctx) {
+			ctx = ctx || window;
+			let args1 = [].slice.call(arguments, 1);
+			let self = this;
+			return function F() {
+				let args2 = Array.from(arguments);
+				if (this instanceof F) {
+					return new self(...args1, ...args2);
+				}
+				return self.apply(ctx, args1.concat(args2));
+			};
+		};
+		// var arr = [1,2,3], obj = {
+		//   name: 'test'
+		// };
+		// function fn (x,y,z){
+		//   console.log('bind',x,y,z, this.name);
+		//   return x;
+		// }
+		// let result = fn.myApply(obj, [2]);
+		// // new result(3,4);
+		// console.log(result);
+		// console.log(fn.myBind(obj, 2)(3,4))
+
+		// 实现一个字符串匹配算法，从字符串S中，查找是否存在字符串T，若存在返回所在位置，不存在则返回-1（如果不能基于 indexOf/includes等内置的方法，你会如何处理呢？）
+		function myFind(source, target) {
+			// 1. 判断长度，如果S长度小于T,直接返回-1
+			let sLength = source.length;
+			let tLength = target.length;
+			let res = -1;
+			if (sLength < tLength) {
+				return res;
+			}
+			// 2. 通过循环 S,去匹配target,如果匹配到了，返回字符下标
+			for (let i = 0; i < sLength - tLength; i++) {
+				let str = source.substr(i, tLength);
+				if (str === target) {
+					res = i;
+				}
+			}
+			return res;
+		}
+		console.log(myFind('abcde', 'a'));
+		let arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
+		//  实现数组扁平：
+		let newArr = [];
+		function myFlat(arr) {
+			for (let i = 0; i < arr.length; i++) {
+				const item = arr[i];
+				if (Array.isArray(item)) {
+					myFlat(item);
+					continue;
+				}
+				newArr.push(item);
+			}
+			return newArr;
+		}
+		myFlat(arr);
+		let no_arr = [];
+		function no_repeat(array) {
+			for (let i = 0; i < array.length; i++) {
+				const ele = array[i];
+				if (no_arr.indexOf(ele) === -1) {
+					no_arr.push(ele);
+				}
+			}
+		}
+		no_repeat(newArr);
+		function mySort(array) {
+			for (let i = 0; i < array.length - 1; i++) {
+				for (let j = 0; j < array.length - 1 - i; j++) {
+					if (array[j] > array[j + 1]) {
+						let temp = array[j];
+						array[j] = array[j + 1];
+						array[j + 1] = temp;
 					}
 				}
-				return handle;
 			}
-			console.log(insert(arr1));
-		</script>
-	</body>
+			return array;
+		}
+		// mySort(no_arr);
+		// console.log(mySort(no_arr));
+		if (1 && 2 && false) {
+			console.log('if');
+		} else {
+			console.log('else');
+		}
+		var arr1 = [12, 8, 24, 16, 1];
+		/* insert: 实现插入排序
+		 *  @params
+		 *       ary[array] 需要排序的数组
+		 *  @return
+		 *       [array] 排序后的新数组
+		 */
+		function insert(arr) {
+			// 1. 准备一个新数组，用来存储抓到手里的牌，开始先抓一张牌进来
+			let handle = [];
+			handle.push(arr[0]);
+			// 2.从第二项开始依次抓牌，一直到把台面上的牌抓光
+			for (let i = 1; i < arr.length; i++) {
+				// A 是新抓的牌
+				let A = arr[i];
+				// 3. 和 handle手机的牌依次比较，从后向前比较
+				for (let j = handle.lenth - 1; j >= 0; j--) {
+					let B = handle[j];
+					// 如果当前新牌A比要比较的牌B打了，就把A放在B的后面
+					if (A > B) {
+						handle.splice(j + 1, 0, A);
+						break;
+					}
+					// 如果比到第一项的，我们就把新牌放到手中最前面即可
+					if (j === 0) {
+						handle.unshift(A);
+					}
+				}
+			}
+			return handle;
+		}
+		console.log(insert(arr1));
+		function debounce(fn, delay, immediate) {
+			var timer = null;
+			var result;
+			return function () {
+				// 如果已经开始计时，就先清除定时器
+				if (timer) clearTimeout(timer);
+				if (immediate) {
+					// 如果已经执行过，则把定时器清空
+					var callNow = !timer;
+					timer = setTimeout(() => {
+						timer = null;
+					}, delay);
+					if (callNow) result = fn.apply(this, arguments);
+				} else {
+					timer = setTimeout(() => {
+						fn.apply(this, arguments)
+					}, delay);
+				}
+				return result;
+			}
+		}
+		Function.prototype.myBind = function (context, ...args1) {
+			if (this === Function.prototype) {
+				throw new TypeError('Error')
+			}
+			const _this = this
+			var F = function () { }
+			return function (...args2) {
+				// 判断是否用于构造函数
+				if (this instanceof F) {
+					return new _this(...args1, ...args2)
+				}
+				return _this.apply(context, args1.concat(args2))
+			}
+		}
+		// 深拷贝
+		function deepClone(obj) {
+			let res = Array.isArray(obj) ? [] : {};
+			for (const key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					const ele = obj[key];
+					if (typeof ele === 'object' && ele !== null) {
+						res[key] = deepClone(ele);
+					} else {
+						res[key] = obj[key];
+					}
+				}
+			}
+			return res;
+		}
+		// 防抖
+		function debounce(fn, delay) {
+			let timer = null;
+			return function () {
+				if (timer) {
+					clearTimeout(timer)
+				}
+				timer = setTimeout(() => {
+					fn.apply(this, arguments);
+				}, delay);
+			}
+		}
+		// 节流
+		function throttle(fn, delay) {
+			let canrun = true;
+			if (!canrun) {
+				return
+			}
+			canrun = false;
+			return function () {
+				setTimeout(() => {
+					fn.apply(this, arguments);
+					canrun = true;
+				}, delay);
+			}
+		}
+		function feiyesi(arr) {
+			let m = arr.length;
+			while (m > 1) {
+				let index = parseInt(Math.random() * m--);
+				[arr[index], arr[m]] = [arr[m], arr[index]];
+			}
+			return arr;
+		}
+		function flat(arr) {
+			let item = arr[0];
+			while (Array.isArray(item)) {
+				item.toString()
+			}
+		}
+		var arrtostring = [
+			123,
+			[
+				456,
+				[
+					789
+				]
+			]
+		]
+		console.log(arrtostring.toString().split(','));
+
+		Array.prototype.myFilter = function (fn, context) {
+			if (typeof fn != 'function') {
+				throw new TypeError(`${fn} is not a function`)
+			}
+			let arr = this;
+			let result = []
+			for (var i = 0; i < arr.length; i++) {
+				let temp = fn.call(context, arr[i], i, arr);
+				if (temp) {
+					result.push(arr[i]);
+				}
+			}
+			return result
+		};
+
+		[1, 23, 4, 5, 3].myFilter(function (item) {
+			return item === 3;
+		});
+		//  1 instanceof Number
+		function myInstanceof(source, target) {
+			let proto = source.__proto__;
+			if (proto) {
+				if (proto === target.prototype) {
+					return true
+				} else {
+					return myInstanceof(proto, target);
+				}
+			} else {
+				return false
+			}
+		}
+		myInstanceof([], Array);
+
+		function myNew() {
+			var obj = new Object();
+			var fn = [].shift.call(arguments);
+			obj.__proto__ = fn.prototype;
+			let res = fn.apply(obj, arguments);
+			return typeof res === 'object' ? res : obj;
+		}
+		// 实现一个jsonp // jsonp({url:'www.xxx.com',data:{a:1,b:2}}).then()
+		// 1. 创造jsonp的类  ?callback=fn&
+		// 2.
+		function jsonp(obj) {
+			var { url, data } = obj;
+			data.fn = `jsonp${Date.now()}`;
+			return new Promise((resolve, reject) => {
+
+				var header = document.querySelector('head');
+				var script = document.createElement('script');
+				script.src = `${url}?${data2url(data)}`
+				header.appendChild(script);
+
+				window[data.fn] = function (res) {
+					res ? resolve(res) : reject('error')
+					header.removeChild(script);
+					window[data.fn] = null;
+				}
+			})
+		}
+		function data2url(arr) {
+			return arr.reduce(function (sum, item) {
+				return sum += item;
+			}, [])
+		}
+		data2url([1, 2, 3, 4, 5])
+		
+// 手写函数柯里化
+		function Curry(fn, ...arg) {
+			if (fn.length <= arg.length) {
+				return fn(...arg);
+			} else {
+				return function (...arg2) {
+					return Curry(fn, ...arg, ...arg2)
+				}
+			}
+		}
+
+		function add(a, b, c) {
+			return a + b + c;
+		}
+
+		console.log(Curry(add, 1)(2)(3))
+	// add(1,2,3)(4)
+	// add(1)(2)(3)(4)
+
+	</script>
+</body>
+
 </html>
