@@ -437,7 +437,7 @@
 				item.toString()
 			}
 		}
-		var arrtostring = [
+		var arrToString = [
 			123,
 			[
 				456,
@@ -446,7 +446,7 @@
 				]
 			]
 		]
-		console.log(arrtostring.toString().split(','));
+		console.log(arrToString.toString().split(','));
 
 		Array.prototype.myFilter = function (fn, context) {
 			if (typeof fn != 'function') {
@@ -514,7 +514,7 @@
 			}, [])
 		}
 		data2url([1, 2, 3, 4, 5])
-		
+
 // 手写函数柯里化
 		function Curry(fn, ...arg) {
 			if (fn.length <= arg.length) {

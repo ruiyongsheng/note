@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taboola ads</title>
+  <script type="text/javascript">
+    window._taboola = window._taboola || [];
+    _taboola.push({ article: 'auto' });
+    !function (e, f, u, i) {
+      if (!document.getElementById(i)) {
+        e.async = 1;
+        e.src = u;
+        e.id = i;
+        f.parentNode.insertBefore(e, f);
+      }
+    }(document.createElement('script'),
+      document.getElementsByTagName('script')[0],
+      '//cdn.taboola.com/libtrc/operasoftware-operanews/loader.js',
+      'tb_loader_script');
+    if (window.performance && typeof window.performance.mark == 'function') { window.performance.mark('tbl_ic'); }
+  </script>
+</head>
+<body>
+  <div>taboola ads test</div>
+  <div id="taboola-below-article-placement---news"></div>
+  <script type="text/javascript">
+    window._taboola = window._taboola || [];
+    _taboola.push({
+      mode: 'alternating-thumbnails-1x4',
+      container: 'taboola-below-article-placement---news',
+      placement: 'Below Article Placement - News',
+      target_type: 'mix'
+    });
+  </script>
+  <script type="text/javascript">
+    window._taboola = window._taboola || [];
+    _taboola.push({ flush: true });
+  </script>
+</body>
+</html>

@@ -17,11 +17,12 @@
 ## js
 一. [ajax常见面试题](https://juejin.im/post/5aa2b26b518825556020873f?utm_medium=fe&utm_source=weixinqun#heading-5);<br>
 二. [JavaScript面向对象核心知识归纳
-](https://blog.dunizb.com/2016/10/25/JavaScript%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E5%BD%92%E7%BA%B3/)；真的是超详细的！！！
+](https://blog.dunizb.com/2016/10/25/JavaScript%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E5%BD%92%E7%BA%B3/)真的是超详细的！！！
+
    1. 什么是原型
-   原型能存储我们的方法，构造函数创建出来的实例对象能够引用原型中的方法
+      原型能存储我们的方法，构造函数创建出来的实例对象能够引用原型中的方法
    2. 查看对象的原型
-   当对象被创建之后，查看对象的原型的方法不止一种，以前一般使用对象的_proto_属性，ES6推出后，推荐用Object.getPrototypeOf()方法来获取对象的原型
+      当对象被创建之后，查看对象的原型的方法不止一种，以前一般使用对象的_proto_属性，ES6推出后，推荐用Object.getPrototypeOf()方法来获取对象的原型
 ```
 function A() {
    this.name='lala';

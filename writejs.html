@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #container {
+      width: 100%;
+      height: 200px;
+      line-height: 200px;
+      text-align: center;
+      color: #fff;
+      background-color: #444;
+      font-size: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    function myInstanceof(left, right) {
+      if (typeof left !== 'object' || left === null) return false;
+
+      // 获取对象上的原型
+      let prototype = right.prototype;
+      // 获取实例的__proto__
+      left = left.__proto__
+      // 判断对象的类型是否等于类型的原型
+      while (true) {
+        if (left === null) return false;
+        if (prototype === left) return true;
+        left = left.__proto__;
+      }
+    }
+    function myInstanceof(left, right) {
+      if (typeof left !== 'object' || left === null) return false // 基础类型一律为 false
+      let proto = Object.getPrototypeOf(left) // 获取对象的原型
+      while (true) {
+        if (proto === null) return false
+        if (proto === right.prototype) return true
+        proto = Object.getPrototypeOf(proto)
+      }
+    }
+
+    function myInstanceof(left, right) {
+      // 非引用类型的直接返回false
+      if (typeof left !== 'object' || left === null) return false;
+      // 获取实例对象上的__proto__
+      let proto = left.__proto__;
+      // 判断成功
+      if (proto === right.prototype) return true;
+      // 否则，递归调用
+      return myInstanceof(proto, right)
+    }
+
+    console.log('myInstanceof ', myInstanceof(1, Object), myInstanceof([], Array), myInstanceof({}, Object));
+    // 手写Object.create()
+    function myCreate(obj) {
+      function F() { };
+      F.prototype = obj;
+      return new F();
+    }
+    function myCreate(obj) {
+      // 创建空的构造函数
+      function F() { };
+      // 将 obj的属性和方法都赋值给构造函数上的 prototype
+      F.prototype = obj;
+      // 执行构造函数
+      return new F();
+    }
+    console.log('myCreate: ', myCreate({ age: '24' }), Object.create({ age: '24' }));
+    // new
+
+    function rys(name, age) {
+      this.strength = 60;
+      this.age = age;
+      return 'handsome boy';
+      // return {
+      //   name: name,
+      //   age,
+      //   habit: 'Games'
+      // }
+    }
+    // 3. 手写 new 的实现
+    function myNew() {
+      // 声明一个空对象
+      let obj = new Object();
+      // 获取构造函数
+      let fn = [].shift.call(arguments);
+      if (typeof fn !== 'function') throw new Error('fn is not function')
+      // 根据原型链的理解, 将构造函数原型上的方法属性都赋值给新对象的原型属性上
+      obj.__proto__ = fn.prototype;
+      // 执行了该构造函数,并修改 this 指向到 obj
+      let res = fn.apply(obj, arguments);
+      // 判断构造函数执行的返回值是否是对象，如果是对象，就直接返回,如果不是，则直接返回原值
+      return typeof res === 'object' ? res : obj;
+    }
+    console.log('myNew', myNew(rys, 'Kevin', '18'), new rys('Kevin', '18'))
+    // call() 方法使用一个指定的 this 值和单独给出的一个或多个参数来调用一个函数。
+    Function.prototype.myCall = function (context, ...args) {
+      // 给上下文赋值，如果不存在，指向window
+      context = context || window;
+      // 给上下文添加fn属性，保存 this指向
+      context.fn = this;
+      // 执行该函数的执行结果
+      let res = context.fn(...args);
+      delete context.fn;
+      return res;
+    }
+
+    // 手写call 两个作用
+    // 1. 执行该函数的执行结果
+    // 2. 改变 this 指向
+    function myCall(context) {
+      // 判断call的上下文存在? 不存在，则指向 window
+      context = context || window;
+      // 给上下文添加fn属性，保存 this 指向
+      context.fn = this;
+      // 执行 该 函数,
+      let res = context.fn(...arguments)
+      delete context.fn;
+      return res;
+    };
+    let target = { name: 'rys' };
+    function sayHello(age, sex) {
+      console.log('myCall', this.name, age, sex);
+    }
+    sayHello.myCall(target, 10, 'male');
+    sayHello.call(target, 10, 'male');
+    // apply methods;
+    // 手写 apply, 跟 call类似，只是需要区分下参数的不同
+    Function.prototype.MyApply = function (context) {
+      context = context || window;
+      context.fn = this;
+      let res;
+      if (Array.isArray(arguments[1])) {
+        res = context.fn(arguments[1]);
+      } else {
+        throw new Error('arguments not array')
+      }
+      delete context.fn;
+      return res;
+    }
+    function fn(x) {
+      console.log(this.name)
+      return {
+        x
+      }
+    }
+    let result = fn.MyApply({ name: 'this is apply name' }, [2, 3, 5]);
+    console.log('MyApply', result);
+    // bind() 方法创建一个新的函数，在 bind() 被调用时，这个新函数的 this 被指定为 bind() 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
+    // 1. 返回一个新函数
+    // 2. 可以传入参数
+
+    Function.prototype.myBind = function () {
+      if (typeof this !== 'function') throw new Error('caller must be a function');
+      // 保存 this指向
+      let self = this;
+      // 获取绑定的对象
+      let context = arguments[0]
+      let args = Array.prototype.slice.call(arguments, 1)
+      let fn = function () {
+        let fnArgs = Array.prototype.slice.call(arguments)
+        // bind 函数的参数 + 延迟函数的参数
+        return self.apply(this instanceof self ? this : context, args.concat(fnArgs))
+      }
+      fn.prototype = Object.create(self.prototype) // 维护原型
+      return fn
+    }
+
+    Function.prototype.myBind = function (context) {
+      let self = this;
+      // 获取到myBind 函数从第二个参数到最后一个参数
+      let args = [].slice.call(arguments, 1)
+      // 防止直接修改 fBound.prototype 的时候，也会直接修改绑定函数的 prototype,所以新生成一个中转空函数
+      let nop = function () { };
+      let fBound = function () {
+        // 获取到新函数里的参数
+        let args2 = [].slice.call(arguments);
+        return self.apply(this instanceof nop ? this : context, args.concat(args2))
+      }
+      // 保留 myBind 原型上的方法 挂到 中转函数的原型上
+      nop.prototype = this.prototype;
+      fBound.prototype = new nop();
+      return fBound
+    }
+    Function.prototype.myBind = function (context) {
+
+      if (typeof this !== "function") {
+        throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+      }
+
+      var self = this;
+      var args = Array.prototype.slice.call(arguments, 1);
+
+      var fNOP = function () { };
+
+      var fBound = function () {
+        var bindArgs = Array.prototype.slice.call(arguments);
+        return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
+      }
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+      return fBound;
+    }
+
+    var value = 2;
+
+    var foo = {
+      value: 1
+    };
+
+    function bar(name, age) {
+      this.habit = 'shopping';
+      console.log(this.value);
+      console.log(name);
+      console.log(age);
+    }
+
+    bar.prototype.friend = 'kevin';
+
+    var bindFoo = bar.myBind(foo, 'daisy');
+
+    var obj = new bindFoo('18');
+    // undefined
+    // daisy
+    // 18
+    console.log(obj.habit);
+    console.log(obj.friend);
+
+    // 手写函数柯里化
+    function Curry(fn, ...arg) {
+      if (fn.length <= arg.length) {
+        return fn(...arg);
+      } else {
+        return function (...arg2) {
+          return Curry(fn, ...arg, ...arg2)
+        }
+      }
+    }
+
+    function add(a, b, c) {
+      return a + b + c;
+    }
+
+    console.log('柯里化', Curry(add, 1)(2)(3))
+    // 组合继承
+    function Parent(value) {
+      this.val = value;
+    }
+    Parent.prototype.getValue = function () {
+      console.log(this.val)
+    }
+    function Child(value) {
+      Parent.call(this, value);
+    }
+    Child.prototype = new Parent();
+    let child = new Child(1);
+    child.getValue();         // 1
+    console.log(child instanceof Parent); // true;
+
+
+    // 寄生组合继承
+    // function Parent (value) {
+    //   this.val = value;
+    // }
+    // Parent.prototype.getValue = function () {
+    //   console.log(this.val);
+    // }
+    // function Child(value) {
+    //   Parent.call(this, value)
+    // }
+    // Child.prototype = Object.create(Parent.prototype, {
+    //   constructor : {
+    //     value: Child,
+    //     enumerable: false,
+    //     writable: true,
+    //     configurable: true
+    //   }
+    // })
+    // const child = new Child(1);
+    // child.getValue(); // 1
+    // child instanceof Parent; // true
+
+    // 数组去重， indexOf, new set, map.has()
+    let arr = [8, 4, 9, 10, 1, 2, 2, 3, 4, 5, 6, 6, 7]
+    function unique(arr) {
+      let res = [];
+      for (let i = 0; i < arr.length; i++) {
+        for (var j = 0; j < res.length; j++) {
+          if (arr[i] === res[j]) break;
+        }
+        if (j === res.length) {
+          res.push(arr[i])
+        }
+      };
+      return res;
+    }
+    // 冒泡排序
+    function bubbleSort(arr) {
+      for (let i = 0; i < arr.length - 1; i++) { // 找到最大值
+        for (let j = 0; j < arr.length - 1 - i; j++) { // 从剩余的里边去找最大值
+          if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          }
+        }
+      }
+      return arr;
+    }
+    // 选择排序，拿自己跟后一位做比较自身以后的元素，最小的元素跟自己调换位置。
+    function selectSort(arr) {
+      let len = arr.length
+      for (let i = 0; i < len - 1; i++) {
+        for (let j = i; j < len; j++) {
+          if (arr[j] < arr[i])
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+        }
+      }
+      return arr
+    }
+    // 快速排序
+    function quickSort(arr) {
+      if (arr.length <= 1) return arr
+      let left = [], right = [], mid = arr.splice(0, 1);
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] < mid ? left.push(arr[i]) : right.push(arr[i])
+      }
+      return quickSort(left).concat(mid, quickSort(right))
+    }
+    // 插入排序
+    function insertSort(arr) {
+      for (let i = 1; i < arr.length; i++) { // arr[0] 默认为已排序的数组
+        for (let j = i; j > 0; j--) {
+          // 后一项比前一项小，调换位置
+          if (arr[j] < arr[j - 1]) {
+            [arr[j], arr[j - 1]] = [arr[j - 1], arr[j]]
+          }
+        }
+      }
+      return arr
+    }
+
+    console.log('去重', unique(arr));
+    console.log('选择排序', selectSort(unique(arr)));
+    console.log('冒泡排序', bubbleSort(unique(arr)));
+    console.log('快速排序', quickSort(unique(arr)));
+    console.log('插入排序', insertSort(unique(arr)));
+    // 手写浅拷贝
+    function shallowCopy(obj) {
+      // 只对 object 进行拷贝
+      if (typeof obj !== 'object') return;
+      // 根据 object 的类型来判断 新建一个数组还是对象
+      let newObj = obj instanceof Array ? [] : {};
+      // 遍历 obj，并判断是 obj 的属性进行拷贝
+      for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+          newObj[key] = object[key];
+        }
+      }
+      return newObj;
+    }
+
+    function deepCopy(obj) {
+      // 只对 object 进行拷贝
+      if (typeof obj !== 'object') return;
+      // 根据 object 的类型来判断 新建一个数组还是对象
+      let newObj = obj instanceof Array ? [] : {};
+      // 遍历 obj，并判断是 obj 的属性进行拷贝
+      for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+          newObj[key] = typeof object[key] === 'object' ? deepCopy(object[key]) : object[key];
+        }
+      }
+      return newObj;
+    }
+    // 数组的扁平化
+    let arr1 = [1, [2, [3, 4]]];
+    function flatten(arr) {
+      return arr.reduce(function (prev, next) {
+        return prev.concat(Array.isArray(next) ? flatten(next) : next);
+      }, [])
+    }
+    function flatten(arr) {
+      while (arr.some(item => Array.isArray(item))) {
+        arr = [].concat(...arr)
+      }
+      return arr;
+    }
+    console.log('扁平化', flatten(arr1), arr1.flat(Infinity)); // [1,2,3,4]
+
+
+    let count = 1;
+    let container = document.getElementById('container');
+
+    function getUserAction() {
+      container.innerHTML = '防抖：' + count++;
+    };
+
+
+    // 防抖和节流
+    let debounce = function (fn, delay) {
+      let timer = null;
+      return function () {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          fn.apply(this, arguments);
+        }, delay)
+      }
+    }
+    // 立即执行版
+    let debounce = function (fn, delay, immediate) {
+      let timer = null;
+      return function () {
+        if (timer) clearTimeout(timer);
+        if (immediate) {
+          // 如果执行过，便不再执行
+          let callNow = !timer;
+          timer = setTimeout(() => {
+            timer = null;
+          }, wait)
+          callNow && fn.apply(this, arguments)
+        } else {
+          timer = setTimeout(() => {
+            fn.apply(this, arguments);
+          }, delay)
+        }
+      }
+    }
+    // 立即执行有返回值版
+    let debounce = function (fn, delay, immediate) {
+      let timer = null;
+      let result = '';
+      return function () {
+        if (timer) clearTimeout(timer);
+        if (immediate) {
+          let callNow = !timer;
+          timer = setTimeout(() => {
+            timer = null;
+          }, wait)
+          callNow && (result = fn.apply(this, arguments))
+        } else {
+          timer = setTimeout(() => {
+            fn.apply(this, arguments);
+          }, delay)
+        }
+      }
+    }
+    // 取消debounce 函数
+    let debounce = function (fn, delay, immediate) {
+      let timer = null;
+      let result = '';
+      let fn = function () {
+        if (timer) clearTimeout(timer);
+        if (immediate) {
+          let callNow = !timer;
+          timer = setTimeout(() => {
+            timer = null;
+          }, wait)
+          callNow && (result = fn.apply(this, arguments))
+        } else {
+          timer = setTimeout(() => {
+            fn.apply(this, arguments);
+          }, delay)
+        }
+      }
+      fn.cancel = function () {
+        clearTimeout(timer);
+        timer = null;
+      }
+      return fn;
+    }
+
+    container.onmousemove = debounce(getUserAction, 2000);
+    // 节流 (定时器版)
+    function throttle(fn, interval) {
+      let flag = true;
+      return function (...args) {
+        if (!flag) return;
+        flag = false;
+        setTimeout(() => {
+          fn.apply(this, args);
+          flag = true;
+        }, interval)
+      }
+    }
+    // 节流 （时间戳版）
+    function throttle(fn, interval) {
+      let last = 0; // 首次直接执行
+      return function () {
+        let now = +new Date();
+        if (now - last < interval) return;
+        last = now;
+        fn.apply(this, arguments)
+      }
+    }
+    // 加强版节流
+    let throttle = (fn, delay) => {
+      let timer = null, last = 0;
+      return function (...args) {
+        let now = +new Date()
+        if (now - last < delay && timer) {
+          clearTimeout(timer)
+          timer = setTimeout(() => {
+            fn.apply(this, args)
+          }, delay)
+        } else { // 到了 delay 时间直接触发，不管了...
+          last = now
+          fn.apply(this, args)
+        }
+      }
+    }
+
+
+
+
+
+  </script>
+</body>
+
+</html>
