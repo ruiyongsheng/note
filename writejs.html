@@ -403,7 +403,7 @@
 
 
     // 防抖和节流
-    let debounce = function (fn, delay) {
+    var debounce = function (fn, delay) {
       let timer = null;
       return function () {
         if (timer) clearTimeout(timer);
@@ -413,7 +413,7 @@
       }
     }
     // 立即执行版
-    let debounce = function (fn, delay, immediate) {
+    var debounce = function (fn, delay, immediate) {
       let timer = null;
       return function () {
         if (timer) clearTimeout(timer);
@@ -432,7 +432,7 @@
       }
     }
     // 立即执行有返回值版
-    let debounce = function (fn, delay, immediate) {
+    var debounce = function (fn, delay, immediate) {
       let timer = null;
       let result = '';
       return function () {
@@ -441,7 +441,7 @@
           let callNow = !timer;
           timer = setTimeout(() => {
             timer = null;
-          }, wait)
+          }, delay)
           callNow && (result = fn.apply(this, arguments))
         } else {
           timer = setTimeout(() => {
@@ -451,16 +451,16 @@
       }
     }
     // 取消debounce 函数
-    let debounce = function (fn, delay, immediate) {
+    var debounce = function (fn, delay, immediate) {
       let timer = null;
       let result = '';
-      let fn = function () {
+      let func = function () {
         if (timer) clearTimeout(timer);
         if (immediate) {
           let callNow = !timer;
           timer = setTimeout(() => {
             timer = null;
-          }, wait)
+          }, delay)
           callNow && (result = fn.apply(this, arguments))
         } else {
           timer = setTimeout(() => {
@@ -468,52 +468,68 @@
           }, delay)
         }
       }
-      fn.cancel = function () {
+      func.cancel = function () {
         clearTimeout(timer);
         timer = null;
       }
-      return fn;
+      return func;
     }
 
-    container.onmousemove = debounce(getUserAction, 2000);
+    // container.onmousemove = debounce(getUserAction, 2000, true);
     // 节流 (定时器版)
     function throttle(fn, interval) {
-      let flag = true;
+      let timer = null;
       return function (...args) {
-        if (!flag) return;
-        flag = false;
-        setTimeout(() => {
-          fn.apply(this, args);
-          flag = true;
-        }, interval)
-      }
-    }
-    // 节流 （时间戳版）
-    function throttle(fn, interval) {
-      let last = 0; // 首次直接执行
-      return function () {
-        let now = +new Date();
-        if (now - last < interval) return;
-        last = now;
-        fn.apply(this, arguments)
-      }
-    }
-    // 加强版节流
-    let throttle = (fn, delay) => {
-      let timer = null, last = 0;
-      return function (...args) {
-        let now = +new Date()
-        if (now - last < delay && timer) {
-          clearTimeout(timer)
+        if (!timer) {
           timer = setTimeout(() => {
-            fn.apply(this, args)
-          }, delay)
-        } else { // 到了 delay 时间直接触发，不管了...
-          last = now
-          fn.apply(this, args)
+            timer = null;
+            fn.apply(this, args);
+          }, interval)
         }
       }
     }
+    // 节流 （时间戳版）
+    function throttle(fn, delay) {
+      let last = 0; // 首次直接执行
+      return function () {
+        let now = +new Date();
+        if (now - last > delay) {
+          last = now;
+          fn.apply(this, arguments)
+        }
+      }
+    }
+    // 加强版节流
+    function throttle(func, wait) {
+      var timer;
+      var previous = 0;
+
+      var later = function () {
+        previous = +new Date();
+        timer = null;
+        func.apply(this, arguments)
+      };
+
+      var throttled = function () {
+        var now = +new Date();
+        //下次触发 func 剩余的时间
+        var remaining = wait - (now - previous);
+        // 如果没有剩余的时间了或者你改了系统时间
+        if (remaining <= 0 || remaining > wait) {
+          if (timer) {
+            clearTimeout(timer);
+            timer = null;
+          }
+          previous = now;
+          func.apply(this, arguments);
+        } else if (!timer) {
+          timer = setTimeout(later, remaining);
+        }
+      };
+      return throttled;
+    }
+    container.onmousemove = throttle(getUserAction, 3000);
+
 
 
 
