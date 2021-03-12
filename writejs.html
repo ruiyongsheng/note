@@ -15,11 +15,17 @@
       background-color: #444;
       font-size: 30px;
     }
+
+    ul,
+    li {
+      list-style: none;
+    }
   </style>
 </head>
 
 <body>
   <div id="container"></div>
+  <ul id='list'></ul>
   <script>
     function myInstanceof(left, right) {
       if (typeof left !== 'object' || left === null) return false;
@@ -529,11 +535,134 @@
       return throttled;
     }
     container.onmousemove = throttle(getUserAction, 3000);
+    // 手写对象属性值迭代器
+    var obj = {
+      name: 'AAA',
+      age: 23,
+      address: '广州'
+    }
+    Object.defineProperty(obj, Symbol.iterator, {
+      writable: false,
+      enumerable: false,
+      configurable: true,
+      value: function () {
+        var self = this;
+        var index = 0;
+        var keys = Object.keys(self);
+        return {
+          next: function () {
+            return {
+              done: index >= keys.length,
+              value: self[keys[index++]]
+            }
+          }
+        }
+      }
+    })
+    for (const val of obj) {
+      console.log(`属性值为：${val}`);
+    }
+    // 手写事件委托
+    // 题目： 循环创建 10个 li 标签，当点击 li 标签时， 打印其对应的索引
+    // <ul id='list'></ul>
+    function loadNode() {
+      var html = '';
+      for (let i = 0; i < 10; i++) {
+        html += '<li>' + i + '</li>'
+      }
+      var list = document.getElementById('list');
+      list.onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+        if (target.nodeName.toLowerCase() === 'li') {
+          console.log(target.innerText)
+        }
+      }
+      list.innerHTML = html;
+    }
+    loadNode();
+    // 手写 JSONP
+    function JSONP(url, data, callback) {
+      const cbName = 'callback_' + new Date().getTime();
+      const queryString = normalizeParams(data);
+      const hasIndex = url.indexOf('?') !== -1;
+      url = `${hasIndex ? url : url + '?'}${queryString}&jsoncallback=${cbName}`
+      const script = document.createElement('script');
+      script.src = url;
+      window[cbName] = function (data) {
+        callback(data);
+        document.body.removeChild(script);
+      }
+      document.body.appendChild(script);
+    }
+    function normalizeParams(data) {
+      if (!data || Object.keys(data).length === 0) {
+        return '';
+      }
+      return Object.keys(data).map((key, index) => {
+        return `${index ? '&' : ''}${key}=${data[key]}`
+      })
+    }
+    const params = {
+      name: 'AAA',
+      age: 23,
+      address: '广东'
+    }
+    JSONP('https://www.runoob.com/try/ajax/jsonp.php', params, function (data) {
+      console.log(data)
+    })
 
+    // 手写基于 发布/订阅 的事件系统
+    // 事件系统包括如下几个方法
+    // 1. on 监听事件方法
+    // 2. off 取消监听事件方法
+    // 3. emit 触发事件方法
+    // 4. once 绑定一次事件听方法
 
+    const isComplexDataType = obj => (typeof obj === 'object' || typeof obj === 'function') && (obj !== null)
+    const deepClone = function (obj, hash = new WeakMap()) {
+      if (obj.constructor === Date) return new Date(obj)       // 日期对象直接返回一个新的日期对象
+      if (obj.constructor === RegExp) return new RegExp(obj)     //正则对象直接返回一个新的正则对象
+      //如果循环引用了就用 weakMap 来解决
+      if (hash.has(obj)) return hash.get(obj)
+      let allDesc = Object.getOwnPropertyDescriptors(obj)
+      //遍历传入参数所有键的特性
+      let cloneObj = Object.create(Object.getPrototypeOf(obj), allDesc)
+      //继承原型链
+      hash.set(obj, cloneObj)
 
+      for (let key of Reflect.ownKeys(obj)) {
+        cloneObj[key] = (isComplexDataType(obj[key]) && typeof obj[key] !== 'function') ? deepClone(obj[key], hash) : obj[key]
+      }
+      return cloneObj
+    }
 
+    // 下面是验证代码
 
+    let cObj = {
+      num: 0,
+      str: '',
+      boolean: true,
+      unf: undefined,
+      nul: null,
+      obj: { name: '我是一个对象', id: 1 },
+      arr: [0, 1, 2],
+      func: function () { console.log('我是一个函数') },
+      date: new Date(0),
+      reg: new RegExp('/我是一个正则/ig'),
+      [Symbol('1')]: 1,
+    };
+
+    Object.defineProperty(cObj, 'innumerable', {
+        enumerable: false, value: '不可枚举属性'
+      }
+    );
+    cObj = Object.create(cObj, Object.getOwnPropertyDescriptors(cObj))
+    cObj.loop = cObj    // 设置loop成循环引用的属性
+    let cloneObj = deepClone(cObj)
+    cloneObj.arr.push(4)
+    console.log('obj', cObj)
+    console.log('cloneObj', cloneObj)
 
   </script>
 </body>

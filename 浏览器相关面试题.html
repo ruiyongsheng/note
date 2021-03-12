@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>浏览器相关</title>
+</head>
+<body>
+  <!-- 事件机制 -->
+  <!-- 注册事件 addEventListener(name, callback, boolean) -->
+  addEventListener(name, callback, boolean)
+  <!--
+    1. name: 代表待注册事件的名字，例如： click 或者说  mouseover
+    2. callback: 代表注册事件的回调函数
+    3. boolean: 一个 boolean 值，为 true 时 代表事件捕获时触发，为 false 时代表事件冒泡时触发，参数缺失时，默认为 false;
+    // 一个注册事件的案例
+    // 点击DOM元素时。顺序打印出：捕获时触发 冒泡时触发
+
+    var box = document.getElementById('box');
+    box.addEventListener('click', () => {
+      console.log('捕获时触发');
+    }, true);
+    box.addEventListener('click',() => {
+      console.log('冒泡时触发');
+    }, false);
+    事件的触发顺序一般而言依据： 捕获 => 目标阶段 => 冒泡
+   -->
+   跨域
+   同源策略： 域名、协议和端口号；
+   解决跨域的方法有： JSONP,CORS, document.domain, postMessage;
+   CORS实现跨域： server端设置 Access-Control-Allow-Origin 就可以开启哪些域名可以使用 CORS 跨域请求；
+   document.domain 实现跨域： 只能用于二级域名相同的情况下
+   postMessage => 一般用于iframe,子页面发送msg => 父级，页面判断来源并接受请求；
+   <!-- 浏览器存储 -->
+   1. cookie 2. localStorage 3. sessionStorage  4. indexDB;
+   <!-- 缓存 -->
+   强缓存： 强缓存可以通过设置 Expires 和 Cache-Control 来实现，强缓存表示在缓存期间，不需要请求，state code 为200
+   协商缓存： 协商缓存表示如果缓存过期了，那么就需要重新发起请求验证资源是否有更新，可通过设置 HTTP Header 的 Last-Modified 和 ETAG来实现，如果资源没改变，state code 为 304
+   <!-- 前端安全 -->
+   xss 攻击的防御：
+   1. 将由用户输入的内容，进行必要的标签转移，包括 < >  / 等
+   2. 在服务端设置 httpOnly 属性
+   3. 过滤一些危险的属性或者方法，例如 onerror 方法、 href 属性、src 属性等
+
+   CSP  内容安全策略：
+  CSP  内容安全策略本质上来说是建立白名单机制，告诉浏览器哪些外部资源可以加载和执行，我们只需要配置，拦截主要交给浏览器
+  两种方法设置 CSP:
+  1. 通过设置 HTTP Header 的 Content-Security-Policy
+  2. 通过 meta 标签来设置， 例如：<meta http-equiv="Content-Security-Policy" />
+
+  CSRF 跨域请求伪造
+
+  CSRF 攻击原理是攻击者伪造一个后端请求地址，诱导用户进行点击，如果用户在已登录的情况下点击了这个危险的链接，则后端服务器会认为是用户在正常访问，攻击者从而可以从请求中拿到一些信息，进而进行攻击
+
+  CSRF 防御
+
+  CSRF  防御有如下几种方式
+  1. Get 请求不对数据进行修改
+  2. 不让第三方网站访问用户的 cookie, 通过可以 Cookie 的 SameSite 属性
+  3. 阻止第三方网站请求
+  4. 在进行请求时，附加 refer 验证 和 token 验证
+
+  点击劫持
+
+  点击劫持是一种视频欺骗的攻击手段，攻击者将需要攻击的网站通过 iframe 的方式嵌入自己的网页中，并将iframe 设置为透明，在页面中透出一个按钮诱导用户点击
+
+  防御手段：设置 http 响应头 X-FRAME-OPTIONS, 它可以设置 DENY、SAMEORIGIN、ALLOW-FROM 分别表示不允许 iframe 展示，只允许永远 iframe 展示，表示页面可以在指定来源的 iframe 中展示
+  
+
+
+</body>
+</html>
