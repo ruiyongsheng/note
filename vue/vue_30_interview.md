@@ -642,12 +642,12 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
 
 * diff 算法 — 比较两棵虚拟 DOM 树的差异；
 
-* pach 算法 — 将两个虚拟 DOM 对象的差异应用到真正的 DOM 树。
+* patch 算法 — 将两个虚拟 DOM 对象的差异应用到真正的 DOM 树。
 
 #### 26.Vue中的key 有什么作用？
 <hr>
 
-`key 是为 Vue 中 vnode 的唯一标记`，通过这个 key，我们的 diff 操作可以更准确、更快速。Vue 的 diff 过程可以概括为：oldCh 和 newCh 各有两个头尾的变量 oldStartIndex、oldEndIndex 和 newStartIndex、newEndIndex，它们会新节点和旧节点会进行两两对比，即一共有4种比较方式：newStartIndex 和oldStartIndex 、newEndIndex 和 oldEndIndex 、newStartIndex 和 oldEndIndex 、newEndIndex 和 oldStartIndex，如果以上 4 种比较都没匹配，如果设置了key，就会用 key 再进行比较，在比较的过程中，遍历会往中间靠，一旦 StartIdx > EndIdx 表明 oldCh 和 newCh 至少有一个已经遍历完了，就会结束比较。具体有无 key 的 diff 过程，可以查看作者写的另一篇详解虚拟 DOM 的文章《深入剖析：Vue核心之虚拟DOM》
+`key 是为 Vue 中 vnode 的唯一标记`，通过这个 key，我们的 diff 操作可以更准确、更快速。Vue 的 diff 过程可以概括为：oldCh 和 newCh 各有两个头尾的变量 oldStartIndex、oldEndIndex 和 newStartIndex、newEndIndex，它们会新节点和旧节点会进行两两对比，即一共有4种比较方式：newStartIndex 和oldStartIndex 、newEndIndex 和 oldEndIndex 、newStartIndex 和 oldEndIndex 、newEndIndex 和 oldStartIndex，如果以上 4 种比较都没匹配，如果设置了key，就会用 key 再进行比较，在比较的过程中，遍历会往中间靠，一旦 StartIdx > EndIdx 表明 oldCh 和 newCh 至少有一个已经遍历完了，就会结束比较。
 
 所以 Vue 中 key 的作用是：`key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操作可以更准确、更快速`
 
@@ -703,11 +703,248 @@ function createKeyToOldIdx (children, beginIdx, endIdx) {
 
 * 使用 Chrome Performance 查找性能瓶颈
 
+#### 28. vue 插槽
+设置在自组件内部的插槽像一个盒子，位置由子组件决定，放什么内容由父组件决定。
+
+实现了内容分发，提高了组件自定义的程度，让组件变的更加灵活
+
+1. 默认插槽
+  无需name属性，取子组件肚子里第一个元素节点作为默认插槽。
+```html
+<!-- 子组件，组件名：child-component -->
+<div class="child-page">
+    <h1>子页面</h1>
+    <slot></slot> <!-- 替换为 <p>hello,world!</p> -->
+</div>
+
+<!-- 父组件 -->
+<div class="parent-page">
+    <child-component>
+        <p>hello,world!</p>
+    </child-component>
+</div>
+
+<!-- 渲染结果 -->
+<div class="parent-page">
+    <div class="child-page">
+        <h1>子页面</h1>
+        <p>hello,world!</p>
+    </div>
+</div>
+```
+
+2. 具名插槽
+
+  在多个插槽的情况下使用，利用name标识插槽
+```html
+<!-- 子组件，组件名：child-component -->
+<div class="child-page">
+  <h1>子页面</h1>
+  <slot name="header"></slot>
+  <slot></slot>  <!-- 等价于 <slot name="default"></slot> -->
+  <slot name="footer"></slot>
+</div>
+
+<!-- 父组件 -->
+<div class="parent-page">
+  <child-component>
+    <template v-slot:header>
+      <p>头部</p>
+    </template>
+    <template v-slot:footer>
+      <p>脚部</p>
+    </template>
+    <p>身体</p>
+  </child-component>
+</div>
+
+<!-- 渲染结果 -->
+<div class="parent-page">
+  <div class="child-page">
+    <h1>子页面</h1>
+    <p>头部</p>
+    <p>身体</p>
+    <p>脚部</p>
+  </div>
+</div>
+```
+3. 作用域插槽
+  子组件给父组件传递数据。
+```html
+<!-- 子组件，组件名：child-component -->
+<div class="child-page">
+    <h1>子页面</h1>
+    <slot name="header" data="data from child-component."></slot>
+</div>
+
+<!-- 父组件 -->
+<div class="parent-page">
+    <child-component>
+        <template v-slot:header="slotProps">
+          <p>头部: {{ slotProps.data }}</p>
+        </template>
+    </child-component>
+</div>
+
+<!-- 渲染结果 -->
+<div class="parent-page">
+    <div class="child-page">
+        <h1>子页面</h1>
+        <p>头部: data from child-component.</p>
+    </div>
+</div>
+```
+#### 29. `$route`和 `$router`的区别
+1. $route是路由信息对象，包括path，params，hash，query，fullPath，matched，name等路由信息参数。
+2. 而$router是路由实例对象包括了路由的跳转方法，钩子函数等。
+#### 30. vue 中 `$nextTick` 的实现原理
+在下次 DOM 更新循环结束之后执行延迟回调。
+`nextTick`主要使用了宏任务和微任务。根据执行环境分别尝试采用
+* Promise
+* MutationObserver
+* setImmediate
+* 如果以上都不行则采用setTimeout
+
+定义了一个异步方法，多次调用 `nextTick` 会将方法存入队列中，通过这个异步方法清空当前队列。
+
+#### 31. vue router 的懒加载
+1. vue 的异步组件
+  这种方法主要是使用了 resolve 的异步机制，用 require 代替了 import 实现按需加载
+```js
+export default new Router({
+  routes: [
+    {
+      path: '/home',',
+      component: (resolve) => require(['@/components/home'], resolve),
+    },
+    {
+      path: '/about',',
+      component: (resolve) => require(['@/components/about'], resolve),
+    },
+  ],
+})
+```
+2. ES6 的 import()
+   vue-router 在官网提供了一种方法，可以理解也是为通过 Promise 的 resolve 机制。因为 Promise 函数返回的 Promise 为 resolve 组件本身，而我们又可以使用 import 来导入组件。
+```js
+export default new Router({
+  routes: [
+    {
+      path: '/home',
+      component: () => import('@/components/home'),
+    },
+    {
+      path: '/about',
+      component: () => import('@/components/home'),
+    },
+  ],
+})
+```
+3. webpack的 require.ensure()
+  这种模式可以通过参数中的 webpackChunkName 将 js 分开打包。
+```js
+export default new Router({
+  routes: [
+    {
+      path: '/home',
+      component: (resolve) => require.ensure([], () => resolve(require('@/components/home')), 'home'),
+    },
+    {
+      path: '/about',
+      component: (resolve) => require.ensure([], () => resolve(require('@/components/about')), 'about'),
+    },
+  ],
+})
+
+```
+#### 32. vue 的自定义指令 (Vue.directive)
+1. `bind`：只调用一次，在指令第一次绑定到元素时调用，可以在这个钩子函数中进行初始化设置;
+2. `inserted`：被绑定元素插入父节点时调用,在bind后面调用；
+3. `update`：所在绑定的组件的VNode更新时调用，但是可能发生在其子VNode更新之前。
+调用时指令的值不一定发生改变，通过比较更新前后的值来忽略不必要的模板更新；
+4. `componentUpdated`：指令所在组件的 VNode 及其子 VNode 全部更新后调用;
+5. `unbind`：只调用一次，指令与元素解绑时调用。
+
+```js
+Vue.directive('color', {
+    bind:function(){
+        alert('bind')
+    },
+    inserted: function (el,binding) {
+        alert('inserted')
+        el.style.color=binding.value;
+    },
+    update:function(el,binding){
+        alert('update')
+        el.style.color=binding.value;
+    },
+    componentUpdated:function(el,binding){
+        alert('componentUpdated')
+        el.style.color=binding.value;
+    },
+    unbind:function(){
+       alert('v-color指令解绑')
+    }
+})
+```
+#### 33. vue-router的相关面试题
+###### 全局路由守卫
+`router.beforeEach`：全局前置守卫。
+`router.beforeResolve`：全局解析守卫。
+`router.afterEach`：全局后置钩子。
+##### 路由级守卫
+`beforeRouteLeave`：在失活的组件里调用离开守卫。
+`beforeRouteUpdate`：在重用的组件里调用,比如包含<router-view />的组件。
+`beforeRouteEnter`：在进入对应路由的组件创建前调用。
+##### 路由独享守卫
+是 `beforeEnter` 守卫
+```js
+const router = new VueRouter({
+    routes: [
+        {
+            path: '/foo',
+            component: Foo,
+            beforeEnter: (to, from, next) => {
+            // ...
+            }
+        }
+    ]
+})
+```
+##### 切换路由后，新页面要滚动到顶部或者保持原先的滚动位置，应该怎么做？
+```js
+const router = new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes,
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return { x: 0, y: 0 };
+        }
+    }
+});
+```
+讲一下完整的导航守卫流程？
+
+* 导航被触发。
+* 在失活的组件里调用离开守卫`beforeRouteLeave(to,from,next)`。
+* 调用全局的`beforeEach( (to,from,next) =>{} )`守卫。
+* 在重用的组件里调用 `beforeRouteUpdate(to,from,next)` 守卫。
+* 在路由配置里调用`beforeEnter(to,from,next)`路由独享的守卫。
+* 解析异步路由组件。
+* 被激活的组件里调用`beforeRouteEnter(to,from,next)`。
+* 在所有组件内守卫和异步路由组件被解析之后调用全局的`beforeResolve( (to,from,next) =>{} )`解析守卫。
+* 导航被确认。
+* 调用全局的`afterEach( (to,from) =>{} )`钩子。
+* 触发 DOM 更新。
+* 用创建好的实例调用`beforeRouteEnter`守卫中传给 next 的回调函数
 
 
 
 
 
 参考文章：
-[vue面试题，总结的太好了](https://github.com/fengshi123/blog/issues/14)
+[vue面试题](https://github.com/fengshi123/blog/issues/14)
 

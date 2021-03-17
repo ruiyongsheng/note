@@ -27,387 +27,12 @@
   <div id="container"></div>
   <ul id='list'></ul>
   <script>
-    function myInstanceof(left, right) {
-      if (typeof left !== 'object' || left === null) return false;
-
-      // 获取对象上的原型
-      let prototype = right.prototype;
-      // 获取实例的__proto__
-      left = left.__proto__
-      // 判断对象的类型是否等于类型的原型
-      while (true) {
-        if (left === null) return false;
-        if (prototype === left) return true;
-        left = left.__proto__;
-      }
-    }
-    function myInstanceof(left, right) {
-      if (typeof left !== 'object' || left === null) return false // 基础类型一律为 false
-      let proto = Object.getPrototypeOf(left) // 获取对象的原型
-      while (true) {
-        if (proto === null) return false
-        if (proto === right.prototype) return true
-        proto = Object.getPrototypeOf(proto)
-      }
-    }
-
-    function myInstanceof(left, right) {
-      // 非引用类型的直接返回false
-      if (typeof left !== 'object' || left === null) return false;
-      // 获取实例对象上的__proto__
-      let proto = left.__proto__;
-      // 判断成功
-      if (proto === right.prototype) return true;
-      // 否则，递归调用
-      return myInstanceof(proto, right)
-    }
-
-    console.log('myInstanceof ', myInstanceof(1, Object), myInstanceof([], Array), myInstanceof({}, Object));
-    // 手写Object.create()
-    function myCreate(obj) {
-      function F() { };
-      F.prototype = obj;
-      return new F();
-    }
-    function myCreate(obj) {
-      // 创建空的构造函数
-      function F() { };
-      // 将 obj的属性和方法都赋值给构造函数上的 prototype
-      F.prototype = obj;
-      // 执行构造函数
-      return new F();
-    }
-    console.log('myCreate: ', myCreate({ age: '24' }), Object.create({ age: '24' }));
-    // new
-
-    function rys(name, age) {
-      this.strength = 60;
-      this.age = age;
-      return 'handsome boy';
-      // return {
-      //   name: name,
-      //   age,
-      //   habit: 'Games'
-      // }
-    }
-    // 3. 手写 new 的实现
-    function myNew() {
-      // 声明一个空对象
-      let obj = new Object();
-      // 获取构造函数
-      let fn = [].shift.call(arguments);
-      if (typeof fn !== 'function') throw new Error('fn is not function')
-      // 根据原型链的理解, 将构造函数原型上的方法属性都赋值给新对象的原型属性上
-      obj.__proto__ = fn.prototype;
-      // 执行了该构造函数,并修改 this 指向到 obj
-      let res = fn.apply(obj, arguments);
-      // 判断构造函数执行的返回值是否是对象，如果是对象，就直接返回,如果不是，则直接返回原值
-      return typeof res === 'object' ? res : obj;
-    }
-    console.log('myNew', myNew(rys, 'Kevin', '18'), new rys('Kevin', '18'))
-    // call() 方法使用一个指定的 this 值和单独给出的一个或多个参数来调用一个函数。
-    Function.prototype.myCall = function (context, ...args) {
-      // 给上下文赋值，如果不存在，指向window
-      context = context || window;
-      // 给上下文添加fn属性，保存 this指向
-      context.fn = this;
-      // 执行该函数的执行结果
-      let res = context.fn(...args);
-      delete context.fn;
-      return res;
-    }
-
-    // 手写call 两个作用
-    // 1. 执行该函数的执行结果
-    // 2. 改变 this 指向
-    function myCall(context) {
-      // 判断call的上下文存在? 不存在，则指向 window
-      context = context || window;
-      // 给上下文添加fn属性，保存 this 指向
-      context.fn = this;
-      // 执行 该 函数,
-      let res = context.fn(...arguments)
-      delete context.fn;
-      return res;
-    };
-    let target = { name: 'rys' };
-    function sayHello(age, sex) {
-      console.log('myCall', this.name, age, sex);
-    }
-    sayHello.myCall(target, 10, 'male');
-    sayHello.call(target, 10, 'male');
-    // apply methods;
-    // 手写 apply, 跟 call类似，只是需要区分下参数的不同
-    Function.prototype.MyApply = function (context) {
-      context = context || window;
-      context.fn = this;
-      let res;
-      if (Array.isArray(arguments[1])) {
-        res = context.fn(arguments[1]);
-      } else {
-        throw new Error('arguments not array')
-      }
-      delete context.fn;
-      return res;
-    }
-    function fn(x) {
-      console.log(this.name)
-      return {
-        x
-      }
-    }
-    let result = fn.MyApply({ name: 'this is apply name' }, [2, 3, 5]);
-    console.log('MyApply', result);
-    // bind() 方法创建一个新的函数，在 bind() 被调用时，这个新函数的 this 被指定为 bind() 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
-    // 1. 返回一个新函数
-    // 2. 可以传入参数
-
-    Function.prototype.myBind = function () {
-      if (typeof this !== 'function') throw new Error('caller must be a function');
-      // 保存 this指向
-      let self = this;
-      // 获取绑定的对象
-      let context = arguments[0]
-      let args = Array.prototype.slice.call(arguments, 1)
-      let fn = function () {
-        let fnArgs = Array.prototype.slice.call(arguments)
-        // bind 函数的参数 + 延迟函数的参数
-        return self.apply(this instanceof self ? this : context, args.concat(fnArgs))
-      }
-      fn.prototype = Object.create(self.prototype) // 维护原型
-      return fn
-    }
-
-    Function.prototype.myBind = function (context) {
-      let self = this;
-      // 获取到myBind 函数从第二个参数到最后一个参数
-      let args = [].slice.call(arguments, 1)
-      // 防止直接修改 fBound.prototype 的时候，也会直接修改绑定函数的 prototype,所以新生成一个中转空函数
-      let nop = function () { };
-      let fBound = function () {
-        // 获取到新函数里的参数
-        let args2 = [].slice.call(arguments);
-        return self.apply(this instanceof nop ? this : context, args.concat(args2))
-      }
-      // 保留 myBind 原型上的方法 挂到 中转函数的原型上
-      nop.prototype = this.prototype;
-      fBound.prototype = new nop();
-      return fBound
-    }
-    Function.prototype.myBind = function (context) {
-
-      if (typeof this !== "function") {
-        throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
-      }
-
-      var self = this;
-      var args = Array.prototype.slice.call(arguments, 1);
-
-      var fNOP = function () { };
-
-      var fBound = function () {
-        var bindArgs = Array.prototype.slice.call(arguments);
-        return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
-      }
-
-      fNOP.prototype = this.prototype;
-      fBound.prototype = new fNOP();
-      return fBound;
-    }
-
-    var value = 2;
-
-    var foo = {
-      value: 1
-    };
-
-    function bar(name, age) {
-      this.habit = 'shopping';
-      console.log(this.value);
-      console.log(name);
-      console.log(age);
-    }
-
-    bar.prototype.friend = 'kevin';
-
-    var bindFoo = bar.myBind(foo, 'daisy');
-
-    var obj = new bindFoo('18');
-    // undefined
-    // daisy
-    // 18
-    console.log(obj.habit);
-    console.log(obj.friend);
-
-    // 手写函数柯里化
-    function Curry(fn, ...arg) {
-      if (fn.length <= arg.length) {
-        return fn(...arg);
-      } else {
-        return function (...arg2) {
-          return Curry(fn, ...arg, ...arg2)
-        }
-      }
-    }
-
-    function add(a, b, c) {
-      return a + b + c;
-    }
-
-    console.log('柯里化', Curry(add, 1)(2)(3))
-    // 组合继承
-    function Parent(value) {
-      this.val = value;
-    }
-    Parent.prototype.getValue = function () {
-      console.log(this.val)
-    }
-    function Child(value) {
-      Parent.call(this, value);
-    }
-    Child.prototype = new Parent();
-    let child = new Child(1);
-    child.getValue();         // 1
-    console.log(child instanceof Parent); // true;
-
-
-    // 寄生组合继承
-    // function Parent (value) {
-    //   this.val = value;
-    // }
-    // Parent.prototype.getValue = function () {
-    //   console.log(this.val);
-    // }
-    // function Child(value) {
-    //   Parent.call(this, value)
-    // }
-    // Child.prototype = Object.create(Parent.prototype, {
-    //   constructor : {
-    //     value: Child,
-    //     enumerable: false,
-    //     writable: true,
-    //     configurable: true
-    //   }
-    // })
-    // const child = new Child(1);
-    // child.getValue(); // 1
-    // child instanceof Parent; // true
-
-    // 数组去重， indexOf, new set, map.has()
-    let arr = [8, 4, 9, 10, 1, 2, 2, 3, 4, 5, 6, 6, 7]
-    function unique(arr) {
-      let res = [];
-      for (let i = 0; i < arr.length; i++) {
-        for (var j = 0; j < res.length; j++) {
-          if (arr[i] === res[j]) break;
-        }
-        if (j === res.length) {
-          res.push(arr[i])
-        }
-      };
-      return res;
-    }
-    // 冒泡排序
-    function bubbleSort(arr) {
-      for (let i = 0; i < arr.length - 1; i++) { // 找到最大值
-        for (let j = 0; j < arr.length - 1 - i; j++) { // 从剩余的里边去找最大值
-          if (arr[j] > arr[j + 1]) {
-            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-          }
-        }
-      }
-      return arr;
-    }
-    // 选择排序，拿自己跟后一位做比较自身以后的元素，最小的元素跟自己调换位置。
-    function selectSort(arr) {
-      let len = arr.length
-      for (let i = 0; i < len - 1; i++) {
-        for (let j = i; j < len; j++) {
-          if (arr[j] < arr[i])
-            [arr[i], arr[j]] = [arr[j], arr[i]]
-        }
-      }
-      return arr
-    }
-    // 快速排序
-    function quickSort(arr) {
-      if (arr.length <= 1) return arr
-      let left = [], right = [], mid = arr.splice(0, 1);
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] < mid ? left.push(arr[i]) : right.push(arr[i])
-      }
-      return quickSort(left).concat(mid, quickSort(right))
-    }
-    // 插入排序
-    function insertSort(arr) {
-      for (let i = 1; i < arr.length; i++) { // arr[0] 默认为已排序的数组
-        for (let j = i; j > 0; j--) {
-          // 后一项比前一项小，调换位置
-          if (arr[j] < arr[j - 1]) {
-            [arr[j], arr[j - 1]] = [arr[j - 1], arr[j]]
-          }
-        }
-      }
-      return arr
-    }
-
-    console.log('去重', unique(arr));
-    console.log('选择排序', selectSort(unique(arr)));
-    console.log('冒泡排序', bubbleSort(unique(arr)));
-    console.log('快速排序', quickSort(unique(arr)));
-    console.log('插入排序', insertSort(unique(arr)));
-    // 手写浅拷贝
-    function shallowCopy(obj) {
-      // 只对 object 进行拷贝
-      if (typeof obj !== 'object') return;
-      // 根据 object 的类型来判断 新建一个数组还是对象
-      let newObj = obj instanceof Array ? [] : {};
-      // 遍历 obj，并判断是 obj 的属性进行拷贝
-      for (const key in obj) {
-        if (Object.hasOwnProperty.call(obj, key)) {
-          newObj[key] = object[key];
-        }
-      }
-      return newObj;
-    }
-
-    function deepCopy(obj) {
-      // 只对 object 进行拷贝
-      if (typeof obj !== 'object') return;
-      // 根据 object 的类型来判断 新建一个数组还是对象
-      let newObj = obj instanceof Array ? [] : {};
-      // 遍历 obj，并判断是 obj 的属性进行拷贝
-      for (const key in obj) {
-        if (Object.hasOwnProperty.call(obj, key)) {
-          newObj[key] = typeof object[key] === 'object' ? deepCopy(object[key]) : object[key];
-        }
-      }
-      return newObj;
-    }
-    // 数组的扁平化
-    let arr1 = [1, [2, [3, 4]]];
-    function flatten(arr) {
-      return arr.reduce(function (prev, next) {
-        return prev.concat(Array.isArray(next) ? flatten(next) : next);
-      }, [])
-    }
-    function flatten(arr) {
-      while (arr.some(item => Array.isArray(item))) {
-        arr = [].concat(...arr)
-      }
-      return arr;
-    }
-    console.log('扁平化', flatten(arr1), arr1.flat(Infinity)); // [1,2,3,4]
-
-
     let count = 1;
     let container = document.getElementById('container');
 
     function getUserAction() {
       container.innerHTML = '防抖：' + count++;
     };
-
-
     // 防抖和节流
     var debounce = function (fn, delay) {
       let timer = null;
@@ -454,6 +79,7 @@
             fn.apply(this, arguments);
           }, delay)
         }
+        return result;
       }
     }
     // 取消debounce 函数
@@ -534,34 +160,34 @@
       };
       return throttled;
     }
-    container.onmousemove = throttle(getUserAction, 3000);
-    // 手写对象属性值迭代器
-    var obj = {
-      name: 'AAA',
-      age: 23,
-      address: '广州'
-    }
-    Object.defineProperty(obj, Symbol.iterator, {
-      writable: false,
-      enumerable: false,
-      configurable: true,
-      value: function () {
-        var self = this;
-        var index = 0;
-        var keys = Object.keys(self);
-        return {
-          next: function () {
-            return {
-              done: index >= keys.length,
-              value: self[keys[index++]]
-            }
+    function throttle(func, wait) {
+      var timeout;
+      var previous = 0;
+
+      var throttled = function () {
+        var now = +new Date();
+        //下次触发 func 剩余的时间
+        var remaining = wait - (now - previous);
+        // 如果没有剩余的时间了或者你改了系统时间
+        if (remaining <= 0 || remaining > wait) {
+          if (timeout) {
+            clearTimeout(timeout);
+            timeout = null;
           }
+          previous = now;
+          func.apply(this, arguments);
+        } else if (!timeout) {
+          timeout = setTimeout(function () {
+            previous = +new Date();
+            timeout = null;
+            func.apply(this, arguments)
+          }, remaining);
         }
-      }
-    })
-    for (const val of obj) {
-      console.log(`属性值为：${val}`);
+      };
+      return throttled;
     }
+    container.onmousemove = throttle(getUserAction, 3000);
+
     // 手写事件委托
     // 题目： 循环创建 10个 li 标签，当点击 li 标签时， 打印其对应的索引
     // <ul id='list'></ul>
@@ -581,65 +207,148 @@
       list.innerHTML = html;
     }
     loadNode();
-    // 手写 JSONP
-    function JSONP(url, data, callback) {
-      const cbName = 'callback_' + new Date().getTime();
-      const queryString = normalizeParams(data);
-      const hasIndex = url.indexOf('?') !== -1;
-      url = `${hasIndex ? url : url + '?'}${queryString}&jsoncallback=${cbName}`
-      const script = document.createElement('script');
-      script.src = url;
-      window[cbName] = function (data) {
-        callback(data);
-        document.body.removeChild(script);
+    // 手写 jsonp
+    const jsonp = ({ url, params, callBack }) => {
+      const generateUrl = () => {
+        let dataSrc = '';
+        for (const key in params) {
+          if (Object.hasOwnProperty.call(params, key)) {
+            const element = object[key];
+            dataSrc += `${key}=${params[key]}&`
+          }
+        }
+        dataSrc += `callback=${callBack}`
+        return `${url}?${dataSrc}`
       }
-      document.body.appendChild(script);
-    }
-    function normalizeParams(data) {
-      if (!data || Object.keys(data).length === 0) {
-        return '';
-      }
-      return Object.keys(data).map((key, index) => {
-        return `${index ? '&' : ''}${key}=${data[key]}`
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = generateUrl();
+        document.body.appendChild(script);
+        window[callBack] = data => {
+          resolve(data);
+          document.removeChild(script)
+        }
       })
     }
-    const params = {
-      name: 'AAA',
-      age: 23,
-      address: '广东'
+    // 手写 instanceof
+    function myInstanceof(left, right) {
+      // 非引用类型直接返回 false
+      if (typeof left !== 'object' || left === null) return false;
+      let __proto__ = left.__proto__;
+      let prototype = right.prototype;
+      if (__proto__ === prototype) return true
+      return myInstanceof(__proto__, right)
     }
-    JSONP('https://www.runoob.com/try/ajax/jsonp.php', params, function (data) {
-      console.log(data)
-    })
-
-    // 手写基于 发布/订阅 的事件系统
-    // 事件系统包括如下几个方法
-    // 1. on 监听事件方法
-    // 2. off 取消监听事件方法
-    // 3. emit 触发事件方法
-    // 4. once 绑定一次事件听方法
-
-    const isComplexDataType = obj => (typeof obj === 'object' || typeof obj === 'function') && (obj !== null)
+    function myInstanceof(left, right) {
+      // 非引用类型直接返回 false
+      if (typeof left !== 'object' || left === null) return false;
+      let __proto__ = left.__proto__;
+      // let __proto__  = Object.getPrototypeOf(left);
+      while (true) {
+        if (__proto__ === null) return false;
+        if (__proto__ === right.prototype) return true
+        __proto__ = left.__proto__;
+      }
+    }
+    console.log('myInstanceof ', myInstanceof(1, Object), myInstanceof([], Array), myInstanceof({}, Object));
+    //  手写 object.create
+    function myCreate(obj) {
+      let F = function () { }
+      F.prototype = obj;
+      return new F();
+    }
+    // 手写 new
+    function myNew() {
+      let obj = new Object();
+      // 获取构造函数
+      let fn = [].shift.call(arguments);
+      obj.__proto__ = fn.prototype;
+      let res = fn.apply(obj, arguments)
+      return typeof res === 'object' ? res : obj;
+    }
+    Function.prototype.myBind = function (context) {
+      let self = this;
+      let args1 = [].slice.call(arguments, 1);
+      let fn = function () {
+        let args2 = [].slice.call(arguments);
+        self.apply(this instanceof self ? this : context, args1.concat(args2))
+      }
+      fn.prototype = Object.create(self.prototype);
+      return fn;
+    }
+    function MyCurry(fn, args1) {
+      if (fn.length <= args1.length) {
+        return fn(...args)
+      } else {
+        return function (...args2) {
+          return MyCurry(fn, ...args1, ...args2)
+        }
+      }
+    }
+    // 关于继承
+    // 1. 原型链继承， child.prototype = new Parent, 属性共享，不能传值
+    // 2. 构造函数继承  function child () { Parent.call(this) }, 解决了属性共享，可以传值，每次实例化都会执行一遍构造函数
+    // 组合式继承，多次执行 parent， 造成性能开销
+    ` 1和2结合 function child () {
+      Parent.call(this)
+    }
+    child.prototype = new Parent;
+    child.prototype.constructor = chid;
+    `
+    // 原型式继承： Object.create(parent)
+    // 寄生式继承：
+    // function clone (origin) {
+    //   let clone = Object.create(origin);
+    //   clone.fn = function () {}
+    //   return clone;
+    // }
+    // 寄生组合式继承，
+    // child.prototype = Object.create(parent.prototype, {
+    //   constructor: {
+    //     value: child,
+    //     configurable: true,
+    //     writable: true,
+    //     enumerable: false
+    //   }
+    // })
+    function shallowCopy(obj) {
+      if (typeof obj !== 'object' || obj === null) return;
+      let newObj = Array.isArray(obj) ? [] : {};
+      for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+          newObj[key] = obj[key];
+        }
+      }
+      return newObj
+    }
+    function deepCopy(obj) {
+      if (typeof obj !== 'object' || obj === null) return;
+      let newObj = Array.isArray(obj) ? [] : {};
+      for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+          newObj[key] = typeof obj[key] === 'object' ? deepCopy(obj[key]) : obj[key];
+        }
+      }
+      return newObj
+    }
+    const isComplexDataType = object => (typeof object === 'object' || typeof object === 'function') && (object !== null)
     const deepClone = function (obj, hash = new WeakMap()) {
-      if (obj.constructor === Date) return new Date(obj)       // 日期对象直接返回一个新的日期对象
-      if (obj.constructor === RegExp) return new RegExp(obj)     //正则对象直接返回一个新的正则对象
-      //如果循环引用了就用 weakMap 来解决
+      if (obj.constructor === Date) return new Date(obj) // 日期对象直接返回一个新的日期对象
+      if (obj.constructor === RegExp) return new RegExp(obj) // 正则对象直接返回一个新的正则对象
+      //  如果循环引用就用 WeakMap 来解决
       if (hash.has(obj)) return hash.get(obj)
       let allDesc = Object.getOwnPropertyDescriptors(obj)
-      //遍历传入参数所有键的特性
+      // 遍历传入参数所有键的特性
       let cloneObj = Object.create(Object.getPrototypeOf(obj), allDesc)
-      //继承原型链
+      // 继承原型链
       hash.set(obj, cloneObj)
-
       for (let key of Reflect.ownKeys(obj)) {
-        cloneObj[key] = (isComplexDataType(obj[key]) && typeof obj[key] !== 'function') ? deepClone(obj[key], hash) : obj[key]
+        cloneObj[key] = (typeof obj[key] === 'object') && (obj[key] !== null) ? deepClone(obj[key], hash) : obj[key]
       }
       return cloneObj
     }
-
     // 下面是验证代码
-
-    let cObj = {
+    let obj = {
       num: 0,
       str: '',
       boolean: true,
@@ -652,17 +361,627 @@
       reg: new RegExp('/我是一个正则/ig'),
       [Symbol('1')]: 1,
     };
-
-    Object.defineProperty(cObj, 'innumerable', {
-        enumerable: false, value: '不可枚举属性'
-      }
+    Object.defineProperty(obj, 'innumerable', {
+      enumerable: false, value: '不可枚举属性'
+    }
     );
-    cObj = Object.create(cObj, Object.getOwnPropertyDescriptors(cObj))
-    cObj.loop = cObj    // 设置loop成循环引用的属性
-    let cloneObj = deepClone(cObj)
+    obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
+    obj.loop = obj    // 设置loop成循环引用的属性
+    let cloneObj = deepClone(obj)
     cloneObj.arr.push(4)
-    console.log('obj', cObj)
+    console.log('obj', obj)
     console.log('cloneObj', cloneObj)
+    // 数组扁平化
+    // function flatten(arr) {
+    //   while (arr.some(item => Array.isArray(item))) {
+    //     arr = [].concat(...arr)
+    //   }
+    //   return arr;
+    // }
+    // function flatten(arr) {
+    //   return arr.reduce(function (prev, next) {
+    //     return prev.concat(Array.isArray(next) ? flatten(next) : next);
+    //   }, [])
+    // }
+    function compose() {
+      var args = arguments;
+      var start = arguments.length - 1;
+      return function () {
+        var i = start;
+        var result = args[i].apply(this, arguments);
+        while (i--) {
+          result = args[i].call(this, result);
+        }
+        return result;
+      }
+    }
+    // 图片懒加载
+    let imgList = [...document.querySelectorAll('img')]
+    let length = imgList.length
+    const imgLazyLoad = function () {
+      let count = 0;
+      return (function () {
+        let deleteIndexList = [];
+        imgList.forEach((img, index) => {
+          let rect = img.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+            img.src = img.dataset.src;
+            deleteIndexList.push(index);
+            count++;
+            if (count === length) {
+              document.removeEventListener('scroll', imgLazyLoad)
+            }
+          }
+        })
+        imgList = imgList.filter((img, index) => !deleteIndexList.includes(index))
+      })()
+    }
+    // 这里最好加上防抖处理
+    document.addEventListener('scroll', imgLazyLoad)
+    // 前端性能优化
+    // 1. 资源都走cdn
+    // 2. 缓存前端静态资源文件 localForage, basket.js, pwa
+    // 前端性能监控
+    // 通过 performance.timing =
+    // 打点请求数据， navigator.sendBeacon('请求地址')
+    // 降低首屏时间的方法 csr/ssr/预渲染/同构
+    // 解决静态资源过大 => gzip 拆包与缓存，走多个静态cdn
+    function debounce(fn, wait, immediate) {
+      var timer, result;
+      let debounced = function () {
+        let context = this;
+        let args = arguments;
+        clearTimeout(timer);
+        if (immediate) {
+          let callNow = !timer;
+          timer = setTimeout(() => {
+            timer = null;
+          }, wait)
+          callNow && (result = fn.apply(context, args));
+        } else {
+          timer = setTimeout(() => {
+            fn.apply(context, args);
+          }, wait)
+        }
+        return result;
+      }
+      debounced.cancel = () => {
+        timer = null;
+        clearTimeout(timer)
+      }
+      return debounced;
+    }
+    function throttle(fn, wait) {
+      let timer, last = 0;
+      let context = this;
+      let args = arguments;
+      let later = function () {
+        last = +new Date();
+        timer = null
+        fn.apply(context, args)
+      }
+      let throttled = function () {
+        let now = +new Date();
+        let remain = wait - (now - last);
+        if (remain <= 0 || remain > wait) {
+          if (timer) {
+            timer = null;
+            clearTimeout(timer);
+          }
+          fn.apply(context, args);
+          last = now;
+        } else if (!timer) {
+          timer = setTimeout(later, wait)
+        }
+      }
+      throttled.cancel = function () {
+        last = 0;
+        timer = null;
+        clearTimeout(timer);
+      }
+      return throttled;
+    }
+    // 冒泡排序
+    let arr = [2, 3, 34, 23, 1, 32, 65, 9]
+    function bubbleSort(arr) {
+      for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = 0; j < arr.length - 1 - i; j++) {
+          if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          }
+        }
+      }
+      return arr
+    }
+    console.log('冒泡排序: ', bubbleSort(arr));
+    // 插入排序
+    function insertSort(arr) {
+      for (let i = 1; i < arr.length; i++) {
+        for (let j = i; j > 0; j--) {
+          // 拿后一项跟前一项比，倒推的形式去排序
+          if (arr[j] < arr[j - 1]) {
+            [arr[j], arr[j - 1]] = [arr[j - 1], arr[j]]
+          }
+        }
+      }
+      return arr;
+    }
+    console.log('插入排序: ', insertSort(arr));
+    // 选择排序
+    function selectSort(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i; j < arr.length - 1; j++) {
+          if (arr[i] > arr[j]) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+          }
+        }
+      }
+      return arr;
+    }
+    console.log('选择排序: ', selectSort(arr));
+
+    // 快速排序
+    function quickSort(arr) {
+      if (arr.length <= 1) return arr;
+      let left = [], right = [], mid = arr.splice(0, 1)
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] > mid ? right.push(arr[i]) : left.push(arr[i]);
+      }
+      return quickSort(left).concat(mid, quickSort(right));
+    }
+    console.log('快速排序: ', quickSort(arr));
+    // promise all 的实现
+    Promise.prototype.all = function (promises) {
+      if (!Array.isArray(promises)) {
+        return "参数为数组"
+      }
+      let result = [], promiseCount = 0, length = promises.length;
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < length; i++) {
+          Promise.resolve(promises[i]).then((res) => {
+            result[i] = res;
+            promiseCount++;
+            if (promiseCount === length) {
+              resolve(result);
+            }
+          }, (err) => {
+            reject(err);
+          })
+        }
+      })
+    }
+    // promise race 的实现
+    Promise.prototype.race = function (promises) {
+      if (!Array.isArray(promises)) {
+        return "参数为数组"
+      }
+      let result = [], promiseCount = 0, length = promises.length;
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < length; i++) {
+          Promise.resolve(promises[i]).then((res) => {
+            resolve(res)
+          }, (err) => {
+            reject(err);
+          })
+        }
+      })
+    }
+    // 斐波那契数列
+    // let fib = function (n) {
+    //   if (n <= 2) {
+    //     return 1
+    //   }
+    //   return fib(n - 2) + fib(n - 1)
+    // }
+
+    // let fib = function (n, prev = 1, next = 1) {
+    //   if (n <= 2) {
+    //     return next
+    //   }
+    //   return fib(n - 1, next, prev + next)
+    // }
+    // 动态规划法
+    // let fibonacci = function (n) {
+    //   if (n <= 2) {
+    //     return 1
+    //   }
+    //   let sum = 0
+    //   let prev = 1
+    //   let next = 1
+    //   for (let i = 3; i <= n; i++) {
+    //     sum = prev + next
+    //     prev = next
+    //     next = sum
+    //   }
+    //   return sum
+    // }
+
+    // // 闭包缓存法
+    // var fibonacci = (function () {
+    //   var memory = {};
+    //   return function (n) {
+    //     if (n == 0 || n == 1) {
+    //       return n
+    //     }
+    //     if (memory[n - 2] === undefined) {
+    //       memory[n - 2] = fibonacci(n - 2)
+    //     }
+    //     if (memory[n - 1] === undefined) {
+    //       memory[n - 1] = fibonacci(n - 1)
+    //     }
+    //     return memory[n] = memory[n - 1] + memory[n - 2]
+    //   }
+    // })()
+    function myNew() {
+      let obj = new Object();
+      let fn = [].shift.call(arguments);
+      obj.__proto__ = fn.prototype;
+      let res = fn.apply(this, arguments);
+      return typeof res === 'object' ? res : obj;
+    }
+    Function.prototype.myCall = function (context) {
+      context = context || window;
+      context.fn = this;
+      let res = context(...arguments);
+      delete context.fn;
+      return res;
+    }
+    Function.prototype.myApply = function (context) {
+      context = context || window;
+      context.fn = this;
+      let res;
+      if (Array.isArray(arguments[1])) {
+        res = context.fn(arguments[1])
+      } else {
+        throw new Error('arguments not array')
+      }
+      delete context.fn;
+      return res;
+    }
+    Function.prototype.myBind = function (context, args1) {
+      context = context || window;
+      let self = this;
+      let fn = function (...args2) {
+        return self.apply(this instanceof self ? this : context, args1.concat(args2))
+      }
+      fn.prototype = Object.create(self.prototype);
+      return fn;
+    }
+    function MyCurry(fn, ...args) {
+      if (fn.length <= args.length) {
+        return fn(...args)
+      } else {
+        return function (...args2) {
+          return MyCurry(fn, ...args, ...args2)
+        }
+      }
+    }
+    // 发布订阅模式
+    class myEventEmitter {
+      constructor() {
+        this.eventMap = {};
+      }
+      on(fn, handler) {
+        if (!this.eventMap[fn]) {
+          this.eventMap[fn] = []
+        }
+        this.eventMap[fn].push(handler)
+      }
+      emit(fn, params) {
+        if (this.eventMap[fn]) {
+          this.eventMap[fn].forEach((handler) => {
+            handler(params)
+          })
+        }
+      }
+      off(fn, handler) {
+        if (this.eventMap[fn]) {
+          this.eventMap[fn].splice(this.eventMap[fn].indexOf(handler) >>> 0, 1)
+        }
+      }
+    }
+    // 实例化 myEventEmitter
+    const myEvent = new myEventEmitter();
+    // 编写一个简单的 handler
+    const testHandler = function (params) {
+      console.log(`test事件被触发了，testHandler 接收到的入参是${params}`);
+    };
+    // 监听 test 事件
+    myEvent.on("test", testHandler);
+    // 在触发 test 事件的同时，传入希望 testHandler 感知的参数
+    myEvent.emit("test", "newState");
+
+    let obj1 = {
+      getA: function () {
+        console.log('this', this)
+        return (() => this)
+      }
+    }
+    let fn = obj1.getA()
+    fn() == obj1 // true
+    console.log('fn: ', fn(), obj1);
+    // output
+    var input = {
+      a: 1,
+      b: [1, 2, { c: true }, [3]],
+      d: { e: 2, f: 3 },
+      g: null,
+    }
+
+    // {
+    //   "a": 1,
+    //   "b[0]": 1,
+    //   "b[1]": 2,
+    //   "b[2].c": true,
+    //   "b[3][0]": 3,
+    //   "d.e": 2,
+    //   "d.f": 3,
+    //   // "g": null,  值为null或者undefined，丢弃
+    // }
+    function flatt(obj) {
+      let result = {};
+      const toString = Object.prototype.toString;
+      const dg = (target, keyPath) => {
+        if (toString.call(target) === '[object Array]') {
+          target.forEach((item, index) => {
+            dg(item, keyPath ? `${keyPath}[${index}]` : '')
+          })
+        } else if (toString.call(target) === '[object Object]') {
+          for (const key in target) {
+            if (Object.hasOwnProperty.call(target, key)) {
+              dg(target[key], keyPath ? `${keyPath}.${key}` : key)
+            }
+          }
+        } else {
+          result[keyPath] = target;
+        }
+      }
+      dg(obj, '');
+      return result;
+    }
+    console.log('object flatten', flatt(input))
+
+    // 用promise封装⼀个简单的ajax请求(get⽅式) ，实现: 请求urlA, urlB，在这两个请求都执行完了之后，请求urlC
+    const promise = (arr, url) => {
+      let result = [], count = 0;
+      const promise1 = new Promise((resolve, reject) => {
+        for (let i = 0; i < arr.length; i++) {
+          Ajax(arr[i]).then((res) => {
+            result[i] = res
+          })
+        }
+        resolve(result);
+      })
+      promise1.then((resolve, reject) => {
+        resolve(result.push(Ajax(url)))
+      })
+      return result;
+    }
+    function Ajax(url) {
+      return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.send();
+        xhr.onreadyStatechange = function () {
+          if (xhr.status === '200' && xhr.readyState === '4') {
+            resolve(xhr.responseText)
+          } else {
+            reject(xhr.responseText);
+          }
+        }
+      })
+    }
+    // 手写 promise.all
+    Promise.prototype.all = (promises) => {
+      let result = [], count = 0;
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < promises.length; i++) {
+          Promise.resolve(promises[i]).then((res) => {
+            result[i] = res;
+            count++;
+            if (count === promises.length) {
+              resolve(result)
+            }
+          }, (err) => {
+            reject(err);
+          })
+        }
+      })
+    }
+    // promise.race 的执行
+    Promise.prototype.race = (promises) => {
+      let result = [];
+      return new Promise((resolve, reject) => {
+        for (let i = 0; i < promises.length; i++) {
+          Promise.resolve(promises[i]).then((res) => {
+            resolve(res)
+          }, (err) => {
+            reject(err);
+          })
+        }
+      })
+    }
+    // promise limit
+    function PromiseLimit(funcArray, limit = 5) {
+      let i = 0;
+      const result = [];
+      const executing = [];
+      const queue = function () {
+        if (i === funcArray.length) return Promise.all(executing);
+        const p = funcArray[i++]();
+        result.push(p);
+        const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+        executing.push(e);
+        if (executing.length >= limit) {
+          return Promise.race(executing).then(
+            () => queue(),
+            e => Promise.reject(e)
+          );
+        }
+        return Promise.resolve().then(() => queue());
+      };
+      return queue().then(() => Promise.all(result));
+    }
+
+    // 测试代码
+    const result = [];
+    for (let index = 0; index < 10; index++) {
+      result.push(function () {
+        return new Promise((resolve, reject) => {
+          console.log("开始" + index, new Date().toLocaleString());
+          setTimeout(() => {
+            resolve(index);
+            console.log("结束" + index, new Date().toLocaleString());
+          }, parseInt(Math.random() * 10000));
+        });
+      });
+    }
+
+    // PromiseLimit(result).then(data => {
+    //   console.log(data);
+    // });
+    // ES 7
+    async function asyncPool(poolLimit, array, iteratorFn) {
+      const ret = []; // 存储所有的异步任务
+      const executing = []; // 存储正在执行的异步任务
+      for (const item of array) {
+        // 调用iteratorFn函数创建异步任务
+        const p = Promise.resolve().then(() => iteratorFn(item, array));
+        ret.push(p); // 保存新的异步任务
+
+        // 当poolLimit值小于或等于总任务个数时，进行并发控制
+        if (poolLimit <= array.length) {
+          // 当任务完成后，从正在执行的任务数组中移除已完成的任务
+          const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+          executing.push(e); // 保存正在执行的异步任务
+          if (executing.length >= poolLimit) {
+            await Promise.race(executing); // 等待较快的任务执行完成
+          }
+        }
+      }
+      return Promise.all(ret);
+    }
+    // ES6
+    function asyncPool(poolLimit, array, iteratorFn) {
+      let i = 0;
+      const ret = []; // 存储所有的异步任务
+      const executing = []; // 存储正在执行的异步任务
+      const enqueue = function () {
+        if (i === array.length) {
+          return Promise.resolve();
+        }
+        const item = array[i++]; // 获取新的任务项
+        const p = Promise.resolve().then(() => iteratorFn(item, array));
+        ret.push(p);
+
+        let r = Promise.resolve();
+
+        // 当poolLimit值小于或等于总任务个数时，进行并发控制
+        if (poolLimit <= array.length) {
+          // 当任务完成后，从正在执行的任务数组中移除已完成的任务
+          const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+          executing.push(e);
+          if (executing.length >= poolLimit) {
+            r = Promise.race(executing);
+          }
+        }
+
+        // 正在执行任务列表 中较快的任务执行完成之后，才会从array数组中获取新的待办任务
+        return r.then(() => enqueue());
+      };
+      return enqueue().then(() => Promise.all(ret));
+    }
+    // 手写 promise all
+    Promise.all = function (iterators) {
+      return new Promise((resolve, reject) => {
+        if (!iterators || iterators.length === 0) {
+          resolve([]);
+        } else {
+          let count = 0; // 计数器，用于判断所有任务是否执行完成
+          let result = []; // 结果数组
+          for (let i = 0; i < iterators.length; i++) {
+            // 考虑到iterators[i]可能是普通对象，则统一包装为Promise对象
+            Promise.resolve(iterators[i]).then(
+              (data) => {
+                result[i] = data; // 按顺序保存对应的结果
+                // 当所有任务都执行完成后，再统一返回结果
+                if (++count === iterators.length) {
+                  resolve(result);
+                }
+              },
+              (err) => {
+                reject(err); // 任何一个Promise对象执行失败，则调用reject()方法
+                return;
+              }
+            );
+          }
+        }
+      });
+    };
+    // 手写 promise race
+    Promise.race = function (iterators) {
+      return new Promise((resolve, reject) => {
+        for (const iter of iterators) {
+          Promise.resolve(iter)
+            .then((res) => {
+              resolve(res);
+            })
+            .catch((e) => {
+              reject(e);
+            });
+        }
+      });
+    };
+  function defineReactive(data, key, val) {
+      observe(val); // 递归遍历所有子属性
+      var dep = new Dep();
+
+      Object.defineProperty(data, key, {
+        enumerable: true,
+        configurable: true,
+        get: function () {
+          if (Dep.target) {  // 判断是否需要添加订阅者
+            dep.addSub(Dep.target); // 在这里添加一个订阅者
+          }
+          return val;
+        },
+        set: function (newVal) {
+          val = newVal;
+          console.log('属性' + key + '已经被监听了，现在值为：“' + newVal.toString() + '”');
+          // dep.notify(); // 如果数据变化，通知所有订阅者
+        }
+      });
+    }
+    function observe (data) {
+      if (!data || typeof data !== 'object') {
+        return;
+      }
+      Object.keys(data).forEach(function (key) {
+        defineReactive(data, key, data[key]);
+      });
+    }
+    var library = {
+      book1: {
+        name: ''
+      },
+      book2: ''
+    };
+    observe(library);
+    library.book1.name = 'vue权威指南'; // 属性name已经被监听了，现在值为：“vue权威指南”
+    library.book2 = '没有此书籍';  // 属性book2已经被监听了，现在值为：“没有此书籍”
+
+    function Dep(){
+      this.subs = [];
+    }
+    Dep.prototype = {
+      addSub: function(sub) {
+        this.subs.push(sub)
+      },
+      notify: function () {
+        this.subs.forEach(sub => sub.update())
+      }
+    }
+
 
   </script>
 </body>
