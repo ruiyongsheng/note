@@ -76,17 +76,67 @@
 		.container1 .right {
 			margin-right: -200px;
 		}*/
+		.left1 {
+			float: left;
+			width: 200px;
+			background: red;
+		}
+
+		.right1 {
+			margin-left: 200px;
+			background: green;
+		}
 	</style>
+	<script>
+		function hello(str) {
+			const arr = str.split('');
+			let result = [];
+			arr.reduce((prev, cur) => {
+				if (cur !== result[result.length - 1]) {
+					result.push(cur)
+				}
+			}, [])
+			return result.join('');
+		}
+		// function hello (str) {
+		// 	let arr = str.split('');
+		// 	let result = [];
+		// 	for (let i = 0; i < arr.length; i++) {
+		// 		const element = arr[i];
+		// 		if (element !== result[result.length -1]) {
+		// 			result.push(element);
+		// 		}
+		// 	}
+		// 	return result.join('')
+		// }
+		console.log('str:', hello('112223344523'));
+		let names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+
+		let nameNum = names.reduce((pre, cur) => {
+			if (cur in pre) {
+				pre[cur]++
+			} else {
+				pre[cur] = 1
+			}
+			return pre
+		}, {})
+		console.log(nameNum);
+	</script>
 </head>
 
 <body>
-	<article class="container">
+	<div>
+		<div class="left1">left</div>
+		<div class="right1">right</div>
+	</div>
+	<!-- <article class="container">
 		<div class="center">
 			<div class="inner">双飞翼布局</div>
 		</div>
 		<div class="left"></div>
 		<div class="right"></div>
-	</article>
+	</article> -->
+
 	<h2>圣杯布局</h2>
 	<button>按钮</button>
 	<!-- <article class="container1">
@@ -251,12 +301,12 @@
 			if (typeof this !== 'function') {
 				throw new Error('this must be function')
 			}
-			let self  = this;
+			let self = this;
 			// 获取绑定的对象
 			let context = arguments[0];
 			// 获取外层参数1
 			let arg1 = [].slice.call(arguments, 1);
-			let fn = function  () {
+			let fn = function () {
 				// 获取内部函数的参数
 				let arg2 = [].slice.call(arguments);
 				return self.apply(this instanceof self ? this : context, arg1.concat(arg2))
@@ -264,21 +314,21 @@
 			fn.prototype = Object.create(this.prototype)
 			return fn;
 		}
-		function debounce (fn, wait, flag) {
+		function debounce(fn, wait, flag) {
 			let timer = null;
-			return function() {
+			return function () {
 				clearTimeout(timer);
 				(flag && !timer) && fn.apply(this, arguments);
 				timer = setTimeout(() => {
-					flag? (timer = null) : fn.apply(this, arguments)
+					flag ? (timer = null) : fn.apply(this, arguments)
 				}, wait)
 			}
 		}
 
 		//
-		const isyinyong = (obj) => (typeof obj === 'object' || typeof obj === 'function') && (obj !== null);
+		const isObject = (obj) => (typeof obj === 'object' || typeof obj === 'function') && (obj !== null);
 
-		function deepclone (obj, hash = new WeakMap()) {
+		function deepClone(obj, hash = new WeakMap()) {
 			if (obj.constructor === Date) return new Date(obj);
 			if (obj.constructor === RegExp) return new RegExp(obj);
 			if (hash.has(obj)) return hash.get(obj);
@@ -286,9 +336,141 @@
 			hash.set(obj, cloneObj);
 
 			for (const key in Reflect.ownKeys(obj)) {
-				cloneObj[key] = (isyinyong(obj[key]) && typeof obj[key] !== 'function') ? deepclone(obj[key], hash) : obj[key]
+				cloneObj[key] = (isObject(obj[key]) && typeof obj[key] !== 'function') ? deepclone(obj[key], hash) : obj[key]
 			}
 			return cloneObj;
+		}
+		function debounce(fn, delay, immediate) {
+			let timer = null;
+			return function () {
+				timer && clearTimeout(timer);
+				if (immediate) {
+					let callNow = !timer;
+					timer = setTimeout(() => {
+						timer = null;
+					}, delay)
+					callNow && fn.apply(this, arguments);
+				} else {
+					timer = setTimeout(() => {
+						fn.apply(this, arguments);
+					}, delay)
+				}
+			}
+		}
+		// 时间戳版
+		function throttle(fn, delay) {
+			let last = 0;
+			return function () {
+				let now = Date.now();
+				if (now - last > delay) {
+					last = now;
+					fn.apply(this, arguments);
+				}
+			}
+		}
+		// 定时器版
+		function throttle(fn, delay) {
+			let timer = null;
+			return function (...args) {
+				if (!timer) {
+					timer = setTimeout(() => {
+						timer = null;
+						fn.apply(this, args);
+					})
+				}
+			}
+		}
+		function throttle(fn, delay) {
+			let timer, last = 0;
+			let later = function () {
+				last = Date.now();
+				timer = null;
+				fn.apply(this, arguments);
+			}
+			return function () {
+				let now = Date.now();
+				let remaining = delay - (now - last);
+				if (remaining <= 0 || remaining > delay) {
+					if (timer) {
+						timer = null;
+						clearTimeout(timer);
+					}
+					last = now;
+					fn.apply(this.arguments);
+				} else if (!timer) {
+					timer = setTimeout(later, remaining);
+				}
+			}
+		}
+		function myInstanceof(left, right) {
+			if (typeof left !== 'object' || left === null) return false;
+			let proto = left.__proto__;
+			if (proto === right.prototype) return true;
+			return myInstanceof(proto, right);
+		}
+		function myInstanceof(left, right) {
+			if (typeof left !== 'object' || left === null); return false;
+			let proto = Object.getPrototypeOf(left);
+			while (true) {
+				if (left === null); return false;
+				if (proto === right.prototype) return true;
+				proto = Object.getPrototypeOf(left);
+			}
+		}
+		function myCreate(obj) {
+			function f() { }
+			f.prototype = obj;
+			return new f();
+		}
+		function myNew() {
+			let obj = new Object();
+			let fn = [].shift.call(arguments);
+			obj.__proto__ = fn.prototype;
+			let res = fn.apply(obj, arguments);
+			return typeof res === 'object' ? res : obj;
+		}
+		function myCall(context, ...args) {
+			context = context || window;
+			context[fn] = this;
+			let res = context.fn(...args);
+			delete context.fn;
+			return res;
+		}
+		function myApply(context) {
+			context = context || window;
+			context.fn = this;
+			let res;
+			if (Array.isArray(arguments[1])) {
+				res = context.fn(arguments[1])
+			} else {
+				throw Error('arguments must be array');
+			}
+			delete context[fn];
+			return res;
+		}
+		function myBind(context, ...arg1) {
+			context = context || window;
+			let self = this;
+			let fn = function (...args2) {
+				return self.apply(this instanceof self ? this : context, arg1.concat(args2));
+			}
+			fn.prototype = Object.create(self.prototype);
+			return fn
+		}
+		function myCurry(fn, ...args1) {
+			if (fn.length <= args1.length) {
+				return fn(...args1)
+			} else {
+				return function (...args2) {
+					return myCurry(fn, ...args1, ...args2)
+				}
+			}
+		}
+		function unCurry() {
+			const self = this;
+			return function (...rest) {
+				return Function.prototype.call.apply(self, rest)
+			}
 		}
 	</script>
 </body>
