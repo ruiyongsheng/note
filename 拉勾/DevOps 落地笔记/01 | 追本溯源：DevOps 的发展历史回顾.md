@@ -1,0 +1,249 @@
+你好，我是 DevOps 亮哥。这节课我们一起回顾一下 DevOps 发展的历史。
+
+任何事物的诞生、发展和消亡都是由所处社会阶段决定的，软件开发方法也是一样。现在我们津津乐道的 DevOps，也有其自己的起源和诞生的前提条件，今天我带领你追本溯源，一起找一找 DevOps 兴起的历史根源。
+
+当谈到 DevOps，就不得不提的两个词是：**精益**和**敏捷**。精益软件开发和敏捷软件开发是 DevOps 发展的两大基础。DevOps 不仅对这两大基础进行了扩展，还引入了很多重要而有用的原则。
+
+因此，在一些人眼中，DevOps 是敏捷的一部分，其实这样的理解是错误的。**DevOps 并不从属于敏捷，事实上它更像是在精益和敏捷经验基础上发展出的新生儿**，是在前人经验上发展，与时俱进的产物。
+
+### 精益软件开发
+
+精益思想诞生于 20 世纪中期的日本丰田汽车公司。
+
+我们把时间线拉到**20 世纪初**，对于当时的人们来讲，汽车还属于奢侈品，只有少数贵族才能拥有。普通老百姓也想拥有这个跑得更快，维护更加方便的交通工具，但他们没有钱。这时的市场迫切需要一种价格便宜、功能简单的汽车满足大多数人的需求。当时的**美国福特汽车公司**，通过**流水装配线**，进行大规模生产。流水线一旦建成，生产速度大为提升。于是在 1908 年到 1927 年间，福特共生产销售了 1500 万辆 T 型车，实现了千百万人拥有汽车的梦想。
+
+在美国汽车大行其道的时代，后起的**日本汽车工业**明显处于**薄弱的阶段**。成立于**1937 年**的日本丰田汽车公司，就面临着不少危机：二战后市场购买力低、车辆需求多样化、技术落后、资金短缺...... 丰田汽车的负责人大野耐一为了带领丰田生存。在经过 20 多年的不断探索之后，终于找到了适合日本国情的汽车生产方式：**丰田生产系统（TPS）**。
+
+大野耐一将丰田生产系统描述为“一个绝对消除浪费的系统”，并实行**多品种、小批量、高质量**和**低消耗**的**精益生产方式**。此后，精益生产方式成了日本汽车工业在市场竞争中战胜美国的重要法宝。也由此促使美国为代表的世界各地的专家、学者对开创大批量生产方式和精益生产方式的汽车工业进行研究。最终人们将这种生产方式命名为精益生产。“精”体现在对产品质量上追求“精益求精”，“益”体现在只有通过**低成本、少消耗，** 企业才能获得收益。
+
+到了**2003**年，由**Mary 和 Tom Poppendieck**编写的 **《精益软件开发：软件开发管理者的敏捷工具箱》\**一书问世，该书第一次把精益思想映射到软件开发中。在\**2006**年，作者在第二本书 **《实施精益软件开发：从概念到价值实践》** 中进一步完善了这种映射，并定义了 7 项原则：**消除浪费**、**内建质量**、**创建知识**、**推迟决策**、**快速交付**、**对人尊重**、**整体优化**。
+
+作者认为，**消除浪费**是精益思想的精髓所在。在精益生产领域，一共定义了 7 种浪费，让我们看一看这7种浪费在软件开发中分别对应什么。
+
+- **库存——未完成的工作**。未完成的工作是指一切已经开始但还未完成的东西。可能是还未编码实现的需求，还未进行测试、部署的代码，未完成的工作不能给最终客户带来价值，但资源已经被消耗了。
+- **过度处理——不必要的流程**。不必要的流程是纯粹的浪费，没有增加任何价值。不必要的流程包括没有达成任何产出的过程，编写没有人读的文档，没有效果的汇报，可以自动化但却还是以手工处理的任务等。
+- **过度生产——额外的特性**。额外的特性是指用户没有明确的需求。每一行代码都是有成本的，因此，用户不需要的功能就不要创建它。
+- **运输——传递**。传递是指中间交付物从一个阶段传递到下一个阶段。比如用户故事从业务人员传递到开发人员，系统设计从架构师传递到开发人员等。每次传递都会有知识丢失，因此要尽可能避免传递。
+- **等待——延迟**。延迟是指在任何环节中的等待，等待就会影响开发进度。与等待相关的延迟有：等待决策、等待资源分配或释放等。
+- **移动——任务切换**。任务切换是指在不同事情之间来回进行切换。每次切换都需要重新回忆之前任务的上下文，浪费大量时间。相信这个大家都深有体会。
+- **缺陷——缺陷**。缺陷在制造业和软件产品中都存在的。缺陷会导致返工，返工是没有增加任何价值的，是严重的浪费。
+
+精益软件开发主要关注点便是**在对客户有价值的上下文环境中消除浪费**。为了帮助企业了解软件开发流程中发生的一切，这里可以采用 **价值流图（Value Stream Map，VSM）** 这个精益工具，来用于检测和消除浪费。
+
+![Devops01图片1.png](https://s0.lgstatic.com/i/image/M00/71/B3/CgqCHl-_SgSAILG6AADV_bxcO_c600.png)
+
+VSM 是一种类似地图的图形，可视化地展示了从开始到结束的所有步骤。每一个活动都被标识了“增加价值的”“没有增加价值的”或者“没有增加价值但必需的”。使用 VSM，让我们更容易识别开发过程中的浪费和瓶颈，更好地采用精益软件开发方法。
+
+### 敏捷软件开发
+
+**20 世纪中叶**，软件开发方法中被广泛采用的是**瀑布模型，\**将软件开发过程分解为一系列依次完成的单独阶段，包括需求、设计、实现、测试、部署和运维。整个开发过程就像瀑布一样，依次向下经过这些阶段。每个阶段都有一个\**开始点**和**结束点**，上一个阶段结束后，便进入到下一个阶段，一旦进入到下一个阶段，就不能再回到上一个阶段。
+
+这种模型的一个前提是需求不再发生变化，每个阶段通过文档进行流转，这也就导致了采用瀑布模型开发的软件项目存在大量的问题，比如进度超期、预算超支、不符合用户需求、需求中途被取消等。
+
+这些问题比较资深的程序员应该都遇到过。这是因为软件开发本身是一个高度动态的过程，软件开发过程中的变化是不可避免的。比如：
+
+- 在需求阶段，由于用户也不知道他们想要什么，而这必然会带来需求的改变；
+- 在编码阶段，可能会发现设计有问题需要重新设计；
+- 在测试阶段，可能会发现代码逻辑有问题需要重新修改；
+- 而这必然导致要返回到上一个阶段或上上一个阶段进行返工修复，这些在瀑布模型下是不允许的或者成本是非常高的。
+
+瀑布模型的软件开发导致了**项目失败率高**、**软件质量低下**和**客户满意度低**。
+
+20 世纪 90 年代，人们对瀑布模式的软件开发方法越来越不满意。这种情况下，诞生了其他一些软件开发方法，包括**极限编程（XP）、Scrum 方法、动态系统开发方法（DSDM）、水晶方法（Crystal），** 以及**特征驱动开发（Feature Driven Development，FDD）** 等。这些方法有很多相同之处，都是希望能够解决软件开发中遇到的问题。
+
+于是，在 2001 年 2 月，17 位软件开发领域的思想家和领军人物，在美国犹他州的雪鸟滑雪场聚会，为期两天的聚会，几乎囊括了当时软件开发领域大多数知名大咖。这次著名的“**雪鸟会议**”最终产出了三个重要的结论：
+
+1. 决定使用“敏捷”这一术语来表示这些新出现的开发方法。
+2. 发表了《敏捷宣言》。
+3. 成立了敏捷联盟。
+
+其中，《敏捷宣言》定义了构成所有敏捷方法的 4 个核心价值观，成为日后指导软件开发的新的开发方法。
+
+> 我们正通过亲身实践和帮助他人实践，来揭示更好的软件开发方法。
+>
+> 通过这项工作，我们认为：
+> 个体和互动 胜于 过程和工具
+> 可工作的软件 胜于 面面俱到的文档
+> 客户合作 胜于 合同谈判
+> 响应变化 胜于 遵循计划
+>
+> 虽然右边也具有价值，但是我们认为左边具有更大的价值。
+> ——引自《敏捷宣言》
+
+在这个《敏捷宣言》陈述的 4 项价值观中，有一点需要特别提醒注意：每一项都涉及**左右两项内容**，这里并不是说右边的没有价值，而是说左右两项都是有价值的，不过**左边的比右边的更有价值**。
+
+随后，社区中的项目管理者和开发人员开始采纳并发展敏捷方法，能够快速交付客户可用的软件。
+
+敏捷开发中的关键点有以下几点：
+
+1. 开发人员与业务人员要相互合作，才能欣然面对需求的变化。即便到了开发后期也一样，为了客户的价值，通过敏捷来响应变化。
+2. 降低每个迭代交付的批量大小，减短交付周期，经常交付可工作的软件。
+
+通过使用敏捷方法，软件开发团队一般 2 到 4 周即可发布一个可工作的产品，并交付给客户。这相比以往几个月发布一个版本的节奏，发布周期缩短了很多。因此客户能够更早地使用产品，开发人员也能够更快地获得反馈，并由此对产品进行调整。可以看出，敏捷软件开发并不只是提高了交付软件的效率，更是响应了用户不断变化的需求。
+
+### DevOps 的兴起
+
+在一些企业里，享受到了敏捷方法带来的好处，极大地提高了软件的交付速度。但是在有些企业里，在采用敏捷软件开发方法后的实际效果并没有达到预期。
+
+这并不是说敏捷方法不好，问题的关键在于**敏捷所涉及的代码开发阶段只是软件端到端价值交付链中的一环**。
+
+在实际开发过程中，开发之前还有需求收集、分析、拆解、设计等环节，在开发之后还有编译、构建，及将制品部署到测试环境、生产环境等环节。只有部署到生产环境交付给用户使用，用户将使用效果反馈给开发人员，这才算是一个软件开发周期的完成。
+
+快速部署到生产环境这个环节在很多企业里也是很难实现的。因为，在大多数企业中**服务器等硬件基础设施还相对薄弱**，**多是陈旧的老机器，新采购的预算申请较难且周期长**。
+
+这种情况，我是深有体会，在我之前的经历的一家国企里，一个项目预算流程走了长达半年时间。 在这种情况下，为了准备一套测试环境短则数周，长则数月。这些问题严重阻碍了软件向测试环境和生产环境部署的效率。同时，为了保证生产环境的稳定性，运维部门的原则是能不变更就不变更。所有的这些问题，都使敏捷开发的收益难以有效体现出来。
+
+随着虚拟机和云计算技术的快速发展，提供 IT 基础设施的方式方法被彻底改变了。资源被池化，可以根据自己的需求动态分配物理资源，用完即可回收。基于**基础设施即代码（Infrastructure as Code，IaC）** 的管理方式，我们只需要编写程序代码，就可以创建基础设施。同时，基础设施也能像代码一样进行管理，进行版本控制、变更追溯、回滚等操作。如今，Docker、K8s 等容器技术的兴起，更进一步提高了实施基础设施的效率。
+
+最终，**敏捷软件开发方法的广泛普及，\**以及\**IT 基础设施即代码（IaC）的管理方式**的出现，推动了IT管理方式的变革，这项运动被冠以"DevOps"之名。
+
+> DevOps是一场运动，是推动企业内部IT管理方式变革的运动。
+> DevOps是一个实践，包含了业界广泛采用的、卓有成效的软件开发方法。
+> DevOps是一个思想，是对精益和敏捷思想的演进，并应用到IT端到端的价值链中。
+
+DevOps 缺少一个清晰的定义，每个人对 DevOps 的理解也都不一样。正如下面这张盲人摸象图，很形象地说明了当前大多数人对 DevOps 理解的现状。
+
+![Devops01图片2.png](https://s0.lgstatic.com/i/image/M00/71/B2/CgqCHl-_SeSAE2QQAAhpCOG5a8A121.png)
+
+总之，DevOps 是抽象的，不是具体的；是全局的，不是局部的；DevOps 告诉我们要做什么（What），但没告诉我们要如何做（How）。因为对于一个企业，IT 管理方式的变革跟企业内部的文化、流程、技术关系密切。当企业在应用DevOps的时候，要结合企业现状，有针对性的，制定适合企业内部的应用方案，切勿盲目追求，为了做而做。
+
+DevOps的兴起并席卷全球，是因为 DevOps 的确为我们带来了好处，解决了企业面临的现实问题。**“缩短市场响应时间”“减少技术债务”和“消除脆弱性”是 DevOp 着手处理的主要任务**。这三个任务中任何一个的改进，都能为企业的业务带来明显的优势。
+
+> **小知识：**
+> DevOps 运动的起点被认为是在 2009 年的 Velocity 大会。这次大会上，**John Allspaw（约翰·沃斯帕）和 Paul Hammond（保罗·哈蒙德）** 发表了主题为 **“每天 10+ 次部署：Flickr 开发和运维的协作”** 的演讲。同年，Patrick Debois 决定在比利时根特市举办首届 DevOpsDays 专题大会。到了 2013年，参加这个活动的 **Gene Kim（基恩·金）** 的 **《凤凰项目》** 一书出版，**DevOps 企业峰会也开始以每年两届的节奏举办**。至此，DevOps 的概念以及社区，开始在全球如火如荼地发展起来。
+
+2017年，中国首届 DevOpsDays 大会在北京召开，DevOps 之父 Patrick 也来到了现场，这场席卷全球的 DevOps 运动终于在中国落地生根。我个人也是在 2017 年开始接触并从事 DevOps 工作，在百度工程效率部参与万人研发团队工具链的建设，并取得了如今的成果。（但我当时并没有去参加首届 DevOpsDays 大会，有点可惜啊！）
+
+### 总结
+
+今天，我把软件开发方法的演变放在历史背景下和你进行了细致讲解，相信你现在对 DevOps 是什么以及其所要发挥的作用有了更好的认识和预期。其实发现到今天，软件开发方法还是在不断演进，出现了很多新的实践，这些新出现的实践就被打上了 DevOps 的标签，成为组织成功的重要因素。
+
+DevOps 通过将敏捷软件开发方法和后续快速部署到生产环境的基础设施能力相结合，真正地打通端到端的软件开发流程，将开发和运维相互融合，最终高效的、高质量的交付用户价值，为企业赢得市场。
+
+了解了 DevOps 的发展史，我们就要开始 DevOps 相关内容学习了。下节课，我们将进入正题，为你讲解 DevOps 中的最佳实践是如何在软件开发过程使用的。
+
+00:00
+
+DevOps 落地笔记
+
+精选留言
+
+![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAABDlBMVEUAAAAAAAArKyscHBwrKyswMDAtLS0xMTEuLi4rKyszMzMzMzMyMjIvLy8zMzMxMTEvLy8tLS0zMzMyMjIxMTEwMDAyMjIwMDAzMzMxMTEwMDAxMTEyMjIzMzMyMjIzMzMxMTEyMjIyMjIyMjIyMjIyMjIyMjIzMzMyMjIzMzMyMjIyMjIzMzMyMjIzMzMyMjIyMjIzMzMyMjIyMjIzMzMyMjIyMjIyMjIzMzMyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIzMzMzMzMyMjIzMzMzMzMzMzMzMzMyMjIzMzMyMjIzMzMzMzMzMzMyMjIzMzMzMzMzMzMyMjIzMzMzMzMyMjIzMzMMFbxYAAAAWXRSTlMAAwYJDBARFRYYHiMkJigqKy0tMzk7PUBBQ0VJTFBSVVlbXGFla3B0dXh/hYeKjY+QkZSVlpiao6ausbK3u73DxcfIys3O0NPY3N3g4uXm6Ovu8fX3+Pr7/Z2GrlIAAAEvSURBVCjPdZJrT8JAEEVvC4ggqAiKiq0vlLa8tIoWBQFBRK0yIrTM//8jfighLWzPh8nNnsnMZrPAAlkxe+Q41DMVGUGiOrHbbzYazb7LpEf9TiVuKzEvx5Q2k7pUUo0HOX9vbsA1aZFNvl9ZI9+x6SWdq1ijyjoApGcWBFizNIAWxUUyTi0gwyUIKXEGZTchlgm3jG4HAAq2XQhWoNMF1QHAZraDFagTHCNMGg4mlbCxlT+MLIRgjWB9hTjp28IZ74vlIV8gQk9i2fqNABqfiJzKVwDk4Xhr3e3QmwQAKfrcXnUp+yfppSzRadCdT2hv2TfkS5/Kv3Av6fsWjgHk1d3NZFa9HfFYk/xzpkb0gT3mr9eR4JLp88f85qCoacXj2NrNp2wfhb0x3h83BKf/ogM3zcQrR7gAAAAASUVORK5CYII=)写留言
+
+置顶
+
+**啦
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+36
+
+原来DevOps和精锐敏捷是这个关系啊！学习了！
+
+**用户1280
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+2
+
+从精益生产到敏捷开发，再到敏捷宣言和DevOps的形成，讲的很有意思，根本停不下来啊
+
+Sphinx
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+想不到DevOps还有这么一段历史，学习了
+
+**1013
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+学习了
+
+**5049
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+DevOps 告诉我们要做什么（What），但没告诉我们要如何做（How）。DevOps 要结合实际。
+
+讲师回复： 是的，每个企业在实施devops的过程中，要结合企业内部的现状，每家企业实施devops的过程和侧重点是不一样的。
+
+**9467
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+学习了，期待更多内容
+
+*峰
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+devops和敏捷缺ias
+
+*来
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+老师讲的太好了，期待
+
+*人
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+打卡
+
+置顶
+
+**啦
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+36
+
+原来DevOps和精锐敏捷是这个关系啊！学习了！
+
+**用户1280
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+2
+
+从精益生产到敏捷开发，再到敏捷宣言和DevOps的形成，讲的很有意思，根本停不下来啊
+
+Sphinx
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+想不到DevOps还有这么一段历史，学习了
+
+**1013
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+学习了
+
+**5049
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+1
+
+DevOps 告诉我们要做什么（What），但没告诉我们要如何做（How）。DevOps 要结合实际。
+
+讲师回复： 是的，每个企业在实施devops的过程中，要结合企业内部的现状，每家企业实施devops的过程和侧重点是不一样的。
+
+**9467
+
+![right-icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4BAMAAABaqCYtAAAAKlBMVEVHcExnZ2dzc3NmZmZqampmZmZmZmZnZ2dnZ2dnZ2dmZmZoaGhmZmZmZmZl+8SAAAAADXRSTlMA/AbsFtilbj5YwSqJPyESoQAAAZxJREFUOMt1lTtLA1EQha8xRhPTBEmhuKCCoNgoIlYLMcRKBG0sxIUgCDaBSDohEO0FEbQyIBZaBazERvAPWCwxPnP+i3tnrlGTmVPswn73NXNm7hrzq9m9kZ2ckTUUABifkOEBrK7liR7BMRFOA/uFc+BUgnV8mFisEW5IsIFi9FzBuwR91KJnAm8S9EIbxSBeBRZHk86MrBQJWjymJUC3nlugSyk+SQyhANfxos+s4krfM0DZvmbw2cuSCHNGi3PAfUygXYiU79ryyw1ibf0xZ9intBsz6SBadx24iiZXz8kPxCiTtYdLPzKTVFkkLQAZO/VikwYW/x/wHohcT/MiPQE8W9frxJrlbpiw4xvA0vbNmWyhj2Nrhmy+B7nEyTsN0rIaJAc0SDWqwX7rhAYfMa/Dui0bDZbwZAwUGNjWUWActnUUyN2hwDTaOkxRaSiwj6pRhjHKgTazSkWlwBK1jgIpBwrkHCgwyZ0oQ86BAjkHCjziG0KE8YBvCA/5KacOm6sgrHFAotouT6J23bkkLbsNDjM9yt7yP+IbQYga5De+eBMAAAAASUVORK5CYII=)
+
+学习了，期待更多内容
